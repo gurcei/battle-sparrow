@@ -1,0 +1,198 @@
+    5 goto 50000:rem jump to start of progrm
+   10 rem *** title screen ***
+   15 print "{clr}title screen..."
+   17 x%=5:y%=5:o%=1:gosub 500
+   18 of%=0:gosub 700
+   20 getkey k$
+   25 gs%=gs%+1
+   30 return
+  500 rem *** draw object o% at x% , y% (with crop and transparency) ***
+  510 p% = ob%(o%):bank 4
+  520 w% = peek(p%) : p%=p%+1
+  525 dw% = w% + x% - 1
+  530 h% = peek(p%) : p%=p%+1
+  535 dh% = h% + y% - 1
+  540 for dy% = y% to dh%
+  550 if y% < 0 or y%> 24 then p%=p%+%w:goto 600
+  560 for dx% = x% to dw%
+  570 if x% < 0 or x% > 79 then p%=p%+1:goto 590
+  575 bank 4:c% = peek(p%):p%=p%+1
+  580 if c%<>32 then bank 128:poke 2048 + dx% + dy% * 80, c%
+  590 next dx%
+  600 next dy%
+  610 rem now to the colours...
+  620 for dy% = y% to dh%
+  630 if y% < 0 or y%> 24 then p%=p%+w%:goto 690
+  640 for dx% = x% to dw%
+  650 if x% < 0 or x% >79 then p%=p%+1:goto 680
+  660 bank 4:c% = peek(p%):p%=p%+1
+  670 bank 128:oc% = peek(2048+dx%+dy%*80):if oc%<>32 then bank 1:poke 63488+dx%+dy%*80,c%
+  680 next dx%
+  690 next dy%
+  695 return
+  700 rem *** draw map of tiles at of% ***
+  710 for zy% = of% to of%+4
+  720 for zx% = 1 to 15
+  730 o%=0:c$=mid$(lv$(zy%),zx%,1)
+  740 if c$="L" then o%=1
+  750 if c$="{SHIFT-@}" then o%=2
+  760 if c$="O" then o%=3
+  770 if c$="P" then o%=4
+  780 if c$="{CBM-P}" then o%=5
+  790 if c$="{CBM-T}" then o%=6
+  800 if c$="{CBM-G}" then o%=7
+  810 if c$="{CBM-M}" then o%=8
+  820 if c$="K" then o%=9
+  830 if c$="J" then o%=10
+  840 if c$="I" then o%=11
+  850 if c$="U" then o%=12
+  860 if c$="x" then o%=13
+  870 if c$="#" then o%=14
+  900 if o%<>0 then x%=zx%*5:y%=zy%*5:gosub 500
+  904 print "{home}                                    ";
+  905 print "{home}zx=";zx%;" zy=";zy%;" c$=";c$;"   ";
+  907 getkey a$
+  910 next zx%
+  920 next zy%
+  930 return
+ 1000 rem *** start level ***
+ 1010 print "start level"
+ 1020 getkey k$
+ 1025 gs%=gs%+1
+ 1030 return
+ 2000 rem *** draw lives/score/hiscore ***
+ 2010 print "{clr}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
+ 2020 return
+ 3000 rem *** draw background tiles ***
+ 3010 return
+ 4000 rem *** draw stars ***
+ 4010 return
+ 5000 rem *** draw baddies ***
+ 5010 return
+ 6000 rem *** draw players ***
+ 6010 return
+ 7000 rem *** draw fire ***
+ 7010 return
+ 8000 rem *** check input ***
+ 8010 return
+ 9000 rem *** check collisions ***
+ 9010 return
+ 10000 rem *** main game loop ***
+ 10010 gosub 2000:rem draw lives/score/hiscore
+ 10020 gosub 3000:rem draw background tiles
+ 10030 gosub 4000:rem draw stars
+ 10040 gosub 5000:rem draw baddies
+ 10050 gosub 6000:rem draw players
+ 10060 gosub 7000:rem draw fire
+ 10070 gosub 8000:rem check input
+ 10080 gosub 9000:rem check collisions
+ 10090 return
+ 10100 gosub 9000:rem check collisions
+ 10110 return
+ 50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
+ 50005 on gs% gosub 50100,10,1000,10000,15000,20000
+ 50010 goto 50005
+ 50100 rem *** init game data ***
+ 50105 bank 4:p = 0:dim lv$(13)
+ 50107 background 0:border 0
+ 50110 dim ob%(18):rem ptrs to object data
+ 50120 for k = 1 to 18
+ 50125 ob%(k)=p
+ 50130 read w:poke p,w:p=p+1
+ 50135 read h:poke p,h:p=p+1
+ 50140 for d = 1 to w*h*2
+ 50150 read v: poke p, v: p=p+1
+ 50160 next d
+ 50170 next k
+ 50175 gs%=gs%+1
+ 50180 rem read level data
+ 50190 for k = 0 to 12
+ 50200 read lv$(k)
+ 50210 next k
+ 50220 return
+ 51000 rem *** obj1 = tile bl ***
+ 51010 data 5,5:rem w,h
+ 51020 data 102,174,186,174,186,102,186,174,186,174,102,174,186,174,186,102,186,174,186,174,124,102,102,102,102
+ 51030 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51040 rem *** obj2 = tile br ***
+ 51050 data 5,5
+ 51060 data 174,186,174,186,102,186,174,186,174,102,174,186,174,186,102,174,186,174,186,102,102,102,102,102,126
+ 51070 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51080 rem *** obj3 = tile tl ***
+ 51090 data 5,5
+ 51100 data 108,102,102,102,102,102,186,174,186,174,102,174,186,174,186,102,186,174,186,174,102,174,186,174,186
+ 51110 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51120 rem *** obj4 = tile tr ***
+ 51130 data 5,5
+ 51140 data 102,102,102,102,123,186,174,186,174,102,174,186,174,186,102,186,174,186,174,102,174,186,174,186,102
+ 51150 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51160 rem *** obj5 = tile b ***
+ 51170 data 5,5
+ 51180 data 174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,102,102,102,102,102
+ 51190 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51200 rem *** obj6 = tile t ***
+ 51210 data 5,5
+ 51220 data 102,102,102,102,102,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174
+ 51230 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51240 rem *** obj7 = tile l ***
+ 51250 data 5,5
+ 51260 data 102,186,174,186,174,102,174,186,174,186,102,186,174,186,174,102,174,186,174,186,102,186,174,186,174
+ 51270 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51280 rem *** obj8 = tile r ***
+ 51290 data 5,5
+ 51300 data 174,186,174,186,102,186,174,186,174,102,174,186,174,186,102,186,174,186,174,102,174,186,174,186,102
+ 51310 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51320 rem *** obj9 = dia br ***
+ 51330 data 5,5
+ 51340 data 186,174,186,174,102,174,186,174,102,126,186,174,102,126,32,174,102,126,32,32,102,126,32,32,32
+ 51350 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,1,9,9,9,1,1,9,9,1,1,1
+ 51360 rem *** obj10 = dia bl ***
+ 51370 data 5,5
+ 51380 data 102,174,186,174,186,124,102,174,186,174,32,124,102,174,186,32,32,124,102,174,32,32,32,124,102
+ 51390 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,1,9,9,9,1,1,1,9,9
+ 51400 rem *** obj11 = dia tr ***
+ 51410 data 5,5
+ 51420 data 102,123,32,32,32,174,102,123,32,32,186,174,102,123,32,174,186,174,102,123,186,174,186,174,102
+ 51430 data 9,9,1,1,1,9,9,9,1,1,9,9,9,9,1,9,9,9,9,9,9,9,9,9,9
+ 51440 rem *** obj12 = dia tl ***
+ 51450 data 5,5
+ 51460 data 32,32,32,108,102,32,32,108,102,174,32,108,102,174,186,108,102,174,186,174,102,174,186,174,186
+ 51470 data 1,9,9,9,9,1,1,9,9,9,1,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+ 51480 rem *** obj13 = turret ***
+ 51490 data 5,5
+ 51500 data 160,105,120,95,160,105,233,194,223,95,117,195,219,195,118,223,95,194,105,233,160,223,98,233,160
+ 51510 data 5,5,5,5,5,5,3,3,3,5,5,3,3,3,5,5,3,3,3,5,5,5,5,5,5
+ 51520 rem *** obj14 = turret shot ***
+ 51530 data 5,5
+ 51540 data 160,236,120,251,160,160,108,102,123,160,97,102,32,102,225,160,124,102,126,160,160,252,98,254,160
+ 51550 data 5,5,5,5,5,5,12,12,12,5,5,12,5,12,5,5,12,12,12,5,5,5,5,5,5
+ 51560 rem *** obj15 = baddie1 ***
+ 51570 data 4,3
+ 51580 data 233,160,160,223,95,209,209,105,85,91,91,73
+ 51590 data 64,2,2,64,65,65,65,65,67,66,66,67
+ 51600 rem *** obj16 = baddie2 ***
+ 51610 data 4,3
+ 51620 data 107,42,42,115,124,91,91,126,78,66,66,77
+ 51630 data 76,76,76,76,78,78,78,78,68,67,67,68
+ 51640 rem *** obj17 = rock ***
+ 51650 data 4,3
+ 51660 data 108,174,160,123,230,230,174,160,124,230,230,126
+ 51670 data 1,15,12,11,1,15,12,11,1,15,12,11
+ 51680 rem *** obj18 = ship ***
+ 51690 data 4,3
+ 51700 data 30,233,223,30,233,195,195,223,105,105,95,95
+ 51710 data 2,73,74,2,72,73,74,6,72,73,74,75
+ 53000 rem *** level 1 ***
+ 53010 data "                "
+ 53020 data " U{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I UI  UI "
+ 53030 data " {CBM-G}x{CBM-M} {CBM-G}x{CBM-M} JxIUxK "
+ 53040 data " J{CBM-P}K J{CBM-P}K  JxxK  "
+ 53050 data "          UxxI  "
+ 53060 data "  U{CBM-T}I    UxKJxI "
+ 53070 data "  {CBM-G}x{CBM-M}    JK  JK "
+ 53080 data "  {CBM-G}xxI          "
+ 53090 data "  J{CBM-P}xxI         "
+ 53100 data "    Jxx{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I"
+ 53110 data "     Jxxxxxxxxx{CBM-M}"
+ 53120 data "      J{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}K"
+ 53130 data ""
