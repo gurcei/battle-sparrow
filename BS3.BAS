@@ -14,25 +14,26 @@
   530 h% = peek(p%) : p%=p%+1
   535 dh% = h% + y% - 1
   540 for dy% = y% to dh%
-  550 if y% < 0 or y%> 24 then p%=p%+w%:goto 600
+  550 if dy% < 0 or dy%> 24 then p%=p%+w%:goto 600
   560 for dx% = x% to dw%
-  570 if x% < 0 or x% > 79 then p%=p%+1:goto 590
+  570 if dx% < 0 or dx% > 79 then p%=p%+1:goto 590
   575 bank 4:c% = peek(p%):p%=p%+1
   580 if c%<>32 then bank 128:poke 2048 + dx% + dy% * 80, c%
   590 next dx%
   600 next dy%
   610 rem now to the colours...
   620 for dy% = y% to dh%
-  630 if y% < 0 or y%> 24 then p%=p%+w%:goto 690
+  630 if dy% < 0 or dy%> 24 then p%=p%+w%:goto 690
   640 for dx% = x% to dw%
-  650 if x% < 0 or x% >79 then p%=p%+1:goto 680
+  650 if dx% < 0 or dx% >79 then p%=p%+1:goto 680
   660 bank 4:c% = peek(p%):p%=p%+1
   670 bank 128:oc% = peek(2048+dx%+dy%*80):if oc%<>32 then bank 1:poke 63488+dx%+dy%*80,c%
   680 next dx%
   690 next dy%
   695 return
   700 rem *** draw map of tiles at of% ***
-  710 for zy% = of% to of%+4
+  705 print "{home}of%=";of%;"{left}       ";
+  710 for zy% = of%/5 to of%/5+4
   715 if zy%<=0 or zy%> 12 then goto 920
   720 for zx% = 1 to 15
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
@@ -51,7 +52,7 @@
   860 if c$="x" then o%=13
   870 if c$="#" then o%=14
   880 if c$="." then o%=19
-  900 if o%<>0 then x%=zx%*5:y%=(zy%-of%)*5:gosub 500
+  900 if o%<>0 then x%=zx%*5:y%=zy%*5-of%:gosub 500
   904 rem print "{home}                                    ";
   905 rem print "{home}zx=";zx%;" zy=";zy%;" c$=";c$;"   ";
   907 rem getkey a$
