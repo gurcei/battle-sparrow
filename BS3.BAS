@@ -1,9 +1,10 @@
     5 goto 50000:rem jump to start of progrm
    10 rem *** title screen ***
    15 print "{clr}title screen..."
-   17 x%=5:y%=5:o%=1:gosub 500
-   18 of%=0:gosub 700
+   18 of%=0
+   19 gosub 700
    20 getkey k$
+   22 of%=of%+1:print "{clr}";:goto 19
    25 gs%=gs%+1
    30 return
   500 rem *** draw object o% at x% , y% (with crop and transparency) ***
@@ -13,7 +14,7 @@
   530 h% = peek(p%) : p%=p%+1
   535 dh% = h% + y% - 1
   540 for dy% = y% to dh%
-  550 if y% < 0 or y%> 24 then p%=p%+%w:goto 600
+  550 if y% < 0 or y%> 24 then p%=p%+w%:goto 600
   560 for dx% = x% to dw%
   570 if x% < 0 or x% > 79 then p%=p%+1:goto 590
   575 bank 4:c% = peek(p%):p%=p%+1
@@ -32,6 +33,7 @@
   695 return
   700 rem *** draw map of tiles at of% ***
   710 for zy% = of% to of%+4
+  715 if zy%<=0 or zy%> 12 then goto 920
   720 for zx% = 1 to 15
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
   740 if c$="L" then o%=1
@@ -48,10 +50,11 @@
   850 if c$="U" then o%=12
   860 if c$="x" then o%=13
   870 if c$="#" then o%=14
-  900 if o%<>0 then x%=zx%*5:y%=zy%*5:gosub 500
-  904 print "{home}                                    ";
-  905 print "{home}zx=";zx%;" zy=";zy%;" c$=";c$;"   ";
-  907 getkey a$
+  880 if c$="." then o%=19
+  900 if o%<>0 then x%=zx%*5:y%=(zy%-of%)*5:gosub 500
+  904 rem print "{home}                                    ";
+  905 rem print "{home}zx=";zx%;" zy=";zy%;" c$=";c$;"   ";
+  907 rem getkey a$
   910 next zx%
   920 next zy%
   930 return
@@ -95,8 +98,8 @@
  50100 rem *** init game data ***
  50105 bank 4:p = 0:dim lv$(13)
  50107 background 0:border 0
- 50110 dim ob%(18):rem ptrs to object data
- 50120 for k = 1 to 18
+ 50110 dim ob%(19):rem ptrs to object data
+ 50120 for k = 1 to 19
  50125 ob%(k)=p
  50130 read w:poke p,w:p=p+1
  50135 read h:poke p,h:p=p+1
@@ -182,17 +185,21 @@
  51690 data 4,3
  51700 data 30,233,223,30,233,195,195,223,105,105,95,95
  51710 data 2,73,74,2,72,73,74,6,72,73,74,75
+ 51720 rem *** obj19 = tile . ***
+ 51730 data 5,5
+ 51740 data 174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174,186,174
+ 51750 data 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
  53000 rem *** level 1 ***
- 53010 data "                "
- 53020 data " U{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I UI  UI "
- 53030 data " {CBM-G}x{CBM-M} {CBM-G}x{CBM-M} JxIUxK "
- 53040 data " J{CBM-P}K J{CBM-P}K  JxxK  "
- 53050 data "          UxxI  "
- 53060 data "  U{CBM-T}I    UxKJxI "
- 53070 data "  {CBM-G}x{CBM-M}    JK  JK "
- 53080 data "  {CBM-G}xxI          "
- 53090 data "  J{CBM-P}xxI         "
- 53100 data "    Jxx{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I"
- 53110 data "     Jxxxxxxxxx{CBM-M}"
- 53120 data "      J{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}K"
+ 53010 data "               "
+ 53020 data " O{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}P UI  UI"
+ 53030 data " {CBM-G}x.{CBM-P}.x{CBM-M} JxIUxK"
+ 53040 data " J{CBM-P}K J{CBM-P}K  JxxK "
+ 53050 data "          UxxI "
+ 53060 data "  U{CBM-T}I    UxKJxI"
+ 53070 data "  {CBM-G}x{CBM-M}    JK  JK"
+ 53080 data "  {CBM-G}xxI         "
+ 53090 data "  J{CBM-P}xxI        "
+ 53100 data "    Jxx{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I"
+ 53110 data "     J.x.x.x.x{CBM-M}"
+ 53120 data "      J{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}K"
  53130 data ""
