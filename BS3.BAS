@@ -1,18 +1,18 @@
     1 ch=$1000:cl=$1800
     5 goto 50000:rem jump to start of progrm
    10 rem *** title screen ***
-   11 bx%=-35:sx%=80:print "{clr}";
-   12 gosub 1800:rem clear screen buffer
-   15 o%=20:x%=bx%:y%=1:gosub 500
-   17 o%=21:x%=sx%:y%=19:gosub 500
-   18 gosub 1700:rem copy scrbuf to screen
-   20 bx%=bx%+1:sx%=sx%-1
-   25 get a$:if a$<>"" then goto 50
-   27 if bx%=90 then bx%=-35:sx%=80
-   30 goto 12
-   50 of%=0
-   60 gs%=gs%+1
-   70 return
+   20 bx%=-35:sx%=80:print "{clr}";
+   30 gosub 1800:rem clear screen buffer
+   40 o%=20:x%=bx%:y%=1:gosub 500
+   50 o%=21:x%=sx%:y%=19:gosub 500
+   60 gosub 1700:rem copy scrbuf to screen
+   70 bx%=bx%+1:sx%=sx%-1
+   80 get a$:if a$<>"" then goto 110
+   90 if bx%=90 then bx%=-35:sx%=80
+  100 goto 30
+  110 of%=0
+  120 gs%=gs%+1
+  130 return
   500 rem *** draw object o% at x% , y% (with crop and transparency) ***
   510 p% = ob%(o%):bank 4
   520 w% = peek(p%) : p%=p%+1
