@@ -102,13 +102,19 @@
  2010 print "{home}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
  2020 return
  3000 rem *** draw background tiles ***
- 3010 gosub 1800:rem clear scrbuf
  3020 if of%<0 then return
  3030 sr=$2000+80*of%:de=$1050:le=$780:tr%=32:gosub 50700:rem transparentdma
  3040 sr=$4000+80*of%:de=$1850:le=$780:tr%=0:gosub 50700:rem transparentdma
  3070 return
  4000 rem *** draw stars ***
- 4010 return
+ 4005 bank 4
+ 4010 for k=0 to 10
+ 4020 poke $1000+ry%(k)*80+rx%(k),46
+ 4030 poke $1800+ry%(k)*80+rx%(k),1
+ 4040 ry%(k)=ry%(k)+rv%(k)
+ 4050 if ry%(k) > 24 then ry%(k) = ry%(k)-23:rx%(k)=int(rnd(1)*25)*3+1
+ 4060 next k
+ 4070 return
  5000 rem *** draw baddies ***
  5010 return
  6000 rem *** draw players ***
@@ -128,8 +134,9 @@
  9010 return
  10000 rem *** main game loop ***
  10010 gosub 2000:rem draw lives/score/hiscore
- 10020 gosub 3000:rem draw background tiles
- 10030 gosub 4000:rem draw stars
+ 10015 gosub 1800:rem clear scrbuf
+ 10020 gosub 4000:rem draw stars
+ 10030 gosub 3000:rem draw background tiles
  10040 gosub 5000:rem draw baddies
  10050 gosub 6000:rem draw players
  10060 gosub 7000:rem draw fire
@@ -144,6 +151,7 @@
  50010 goto 50005
  50100 rem *** init game data ***
  50105 bank 4:p = 0:dim lv$(13)
+ 50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
  50107 background 0:border 0
  50108 gosub 50500:rem init transparent dma struct
  50110 dim ob%(21):rem ptrs to object data
