@@ -1,7 +1,7 @@
     1 ch=$1000:cl=$1800
     5 goto 50000:rem jump to start of progrm
    10 rem *** title screen ***
-   11 bx%=-35:sx%=80
+   11 bx%=-35:sx%=80:print "{clr}";
    12 gosub 1800:rem clear screen buffer
    15 o%=20:x%=bx%:y%=1:gosub 500
    17 o%=21:x%=sx%:y%=19:gosub 500
@@ -66,6 +66,7 @@
   930 return
  1000 rem *** start level ***
  1010 ch=$2000:cl=$4000
+ 1011 px%=39:py%=21
  1015 gosub 1900:rem clear map
  1020 s$="loading level 1..."
  1030 print "{clr}";
@@ -86,8 +87,8 @@
  1560 for k=0 to (20-len(s$))*10:next k
  1570 return
  1700 rem *** dma copy from screen buffer to screen ***
- 1710 dma 0, $7d0, $1000, 4, $0800, 0
- 1720 dma 0, $7d0, $1800, 4, $f800, 1
+ 1710 dma 0, $7d0, $1050, 4, $0850, 0
+ 1720 dma 0, $7d0, $1850, 4, $f850, 1
  1730 return
  1800 rem *** dma clear screen buffer ***
  1810 dma 3, $7d0, 32, 0, $1000, 4
@@ -98,27 +99,31 @@
  1920 dma 3, $2000, 0, 0, $4000, 4
  1930 return
  2000 rem *** draw lives/score/hiscore ***
- 2010 print "{clr}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
+ 2010 print "{home}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
  2020 return
  3000 rem *** draw background tiles ***
  3010 gosub 1800:rem clear scrbuf
  3020 if of%<0 then return
  3030 dma 0, $780, $2000+80*of%,4, $1050, 4
  3040 dma 0, $780, $4000+80*of%,4, $1850, 4
- 3045 gosub 1700
- 3050 getkey k$
- 3060 of%=of%+1
  3070 return
  4000 rem *** draw stars ***
  4010 return
  5000 rem *** draw baddies ***
  5010 return
  6000 rem *** draw players ***
- 6010 return
+ 6005 ch=$1000:cl=$1800
+ 6010 o%=18:x%=px%:y%=py%:gosub 500
+ 6020 return
  7000 rem *** draw fire ***
  7010 return
  8000 rem *** check input ***
- 8010 return
+ 8010 get k$
+ 8020 if k$="a" then px%=px%-2:if px%<0 then px%=0
+ 8030 if k$="d" then px%=px%+2:if px%>76 then px%=76
+ 8040 if k$="w" then of%=of%-1
+ 8050 if k$="s" then of%=of%+1
+ 8060 return
  9000 rem *** check collisions ***
  9010 return
  10000 rem *** main game loop ***
@@ -130,9 +135,10 @@
  10060 gosub 7000:rem draw fire
  10070 gosub 8000:rem check input
  10080 gosub 9000:rem check collisions
- 10090 return
- 10100 gosub 9000:rem check collisions
- 10110 return
+ 10110 rem *** page flip ***
+ 10120 gosub 1700:rem copy scrbuf to screen
+ 10125 rem sleep 0.05
+ 10130 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
  50010 goto 50005
