@@ -20,7 +20,7 @@
   530 h% = peek(p%) : p%=p%+1
   535 dh% = h% + y% - 1
   540 for dy% = y% to dh%
-  550 if dy% < 1 or dy%> 24 then p%=p%+w%:goto 600
+  550 if dy% < 0 then p%=p%+w%:goto 600
   560 for dx% = x% to dw%
   570 if dx% < 0 or dx% > 79 then p%=p%+1:goto 590
   575 bank 4:c% = peek(p%):p%=p%+1
@@ -29,7 +29,7 @@
   600 next dy%
   610 rem now to the colours...
   620 for dy% = y% to dh%
-  630 if dy% < 1 or dy%> 24 then p%=p%+w%:goto 690
+  630 if dy% < 0 then p%=p%+w%:goto 690
   640 for dx% = x% to dw%
   650 if dx% < 0 or dx% >79 then p%=p%+1:goto 680
   660 bank 4:c% = peek(p%):p%=p%+1
@@ -38,8 +38,7 @@
   690 next dy%
   695 return
   700 rem *** draw map of tiles at of% ***
-  705 print "{home}of%=";of%;"{left}       ";
-  710 for zy% = of%/5 to of%/5+5
+  710 for zy% = 0 to 12
   715 if zy%<=0 or zy%> 12 then goto 920
   720 for zx% = 1 to 15
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
@@ -66,13 +65,18 @@
   920 next zy%
   930 return
  1000 rem *** start level ***
- 1010 s$="level 1"
- 1015 print "{clr}";
- 1017 x%=37:y%=11:gosub 1500
- 1020 get k$:if k$="" then pk=pk+1:goto 1017
- 1022 foreground 1
- 1025 gs%=gs%+1
- 1030 return
+ 1010 ch=$2000:cl=$4000
+ 1015 gosub 1900:rem clear map
+ 1020 s$="loading level 1..."
+ 1030 print "{clr}";
+ 1040 x%=33:y%=11:gosub 1500
+ 1045 gosub 700:rem copy tiles into map
+ 1047 s$="level 1 ready!    "
+ 1048 x%=33:y%=11:gosub 1500
+ 1050 get k$:if k$="" then pk=pk+1:goto 1048
+ 1060 foreground 1
+ 1070 gs%=gs%+1
+ 1080 return
  1500 rem *** sub: print rainbow string(x%,y%,pk,s$) ***
  1510 cursor x%,y%
  1520 for k=1 to len(s$)
@@ -97,10 +101,14 @@
  2010 print "{clr}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
  2020 return
  3000 rem *** draw background tiles ***
- 3010 gosub 700
- 3020 getkey k$
- 3030 of%=of%+1
- 3040 return
+ 3010 gosub 1800:rem clear scrbuf
+ 3020 if of%<0 then return
+ 3030 dma 0, $780, $2000+80*of%,4, $1050, 4
+ 3040 dma 0, $780, $4000+80*of%,4, $1850, 4
+ 3045 gosub 1700
+ 3050 getkey k$
+ 3060 of%=of%+1
+ 3070 return
  4000 rem *** draw stars ***
  4010 return
  5000 rem *** draw baddies ***
