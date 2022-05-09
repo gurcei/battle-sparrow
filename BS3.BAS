@@ -3,7 +3,7 @@
    10 rem *** title screen ***
    20 bx%=15:sx%=10:print "{clr}";
    25 gosub 1900:o%=22:x%=24:y%=4:ch=$2000:cl=$4000:gosub 500
-   26 o%=23:x%=12:y%=11:gosub 500:o%=24:x%=30:y%=13:gosub 500
+   26 o%=23:s%=0:x%=12:y%=11:gosub 400:o%=24:x%=30:y%=13:gosub 400
    27 ch=$1000:cl=$1800
    30 gosub 1800:rem clear screen buffer
    31 gosub 4000:rem draw bird
