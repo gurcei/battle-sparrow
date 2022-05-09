@@ -5,6 +5,7 @@
    25 gosub 1900:o%=22:x%=24:y%=4:ch=$2000:cl=$4000:gosub 500
    27 ch=$1000:cl=$1800
    30 gosub 1800:rem clear screen buffer
+   31 gosub 4000:rem draw bird
    32 sr=$2000+80:de=$1050:le=$780:tr%=32:gosub 50700:rem transparentdma
    34 sr=$4000+80:de=$1850:le=$780:tr%=0:gosub 50700:rem transparentdma
    40 for s%=0 to 4
