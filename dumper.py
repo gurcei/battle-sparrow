@@ -1,10 +1,10 @@
 import os
 
-x = 10
-y = 8
-w = 42
-h = 5
-fl = "title"
+x = 24
+y = 4
+w = 33
+h = 17
+fl = "sparrow"
 
 skip = x + 80*y
 
