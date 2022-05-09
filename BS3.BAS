@@ -3,6 +3,7 @@
    10 rem *** title screen ***
    20 bx%=15:sx%=10:print "{clr}";
    25 gosub 1900:o%=22:x%=24:y%=4:ch=$2000:cl=$4000:gosub 500
+   26 o%=23:x%=12:y%=11:gosub 500:o%=24:x%=30:y%=13:gosub 500
    27 ch=$1000:cl=$1800
    30 gosub 1800:rem clear screen buffer
    31 gosub 4000:rem draw bird
@@ -15,11 +16,6 @@
    52 o%=21:x%=18-sin(t+s%*0.05)*15*sin(zt):y%=19+s%:gosub 400
    54 next s%
    60 gosub 1700:rem copy scrbuf to screen
-   70 s$="programmed in basic 65 by gurce isikyildiz (ce ce) 2022"
-   71 x%=12:y%=11:gosub 1500
-   72 s$="press any key to begin!"
-   73 x%=30:y%=13:gosub 1500
-   74 pk=pk+1
    80 get a$:if a$<>"" then goto 110
    90 if bx%=90 then bx%=-35:sx%=80
    95 t=t+0.05:zt=zt+0.01
@@ -177,8 +173,8 @@
  50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
  50107 background 0:border 0
  50108 gosub 50500:rem init transparent dma struct
- 50110 dim ob%(22):rem ptrs to object data
- 50120 for k = 1 to 22
+ 50110 dim ob%(24):rem ptrs to object data
+ 50120 for k = 1 to 24
  50125 ob%(k)=p
  50130 read w:poke p,w:p=p+1
  50135 read h:poke p,h:p=p+1
@@ -355,6 +351,16 @@
  52052 data 1,1,1,1,1,1,1,1,1,1,1,6,6,6,6,6,6,6,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1
  52053 data 1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,6,1,1,6,6,1,1,1,1,1,1,1,1,1,1,1,1,1
  52054 data 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,6,6,1,1,1,1,1,1,1,1,1,1,1,1
+ 52060 rem *** obj23 = text1 ***
+ 52070 data 55,1
+ 52080 data 16,18,15,7,18,1,13,13,5,4,32,9,14,32,2,1,19,9,3,32,54,53,32,2,25,32,7,21,18,3,5,32,9,19,9,11,25,9,12,4,9,26,32,40,3,5,32,3,5
+ 52090 data 41,32,50,48,50,50
+ 52100 data 71,72,73,74,75,76,77,78,79,64,0,66,67,0,69,70,71,72,73,0,75,76,0,78,79,0,65,66,67,68,69,0,71,72,73,74,75,76,77,78,79,64
+ 52110 data 0,66,67,68,0,70,71,72,0,74,75,76,77
+ 52120 rem *** obj24 = text2 ***
+ 52130 data 23,1
+ 52140 data 16,18,5,19,19,32,1,14,25,32,11,5,25,32,20,15,32,2,5,7,9,14,33
+ 52150 data 71,72,73,74,75,0,77,78,79,0,65,66,67,0,69,70,0,72,73,74,75,76,77
  53000 rem *** level 1 ***
  53010 data "               "
  53020 data " O{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}P UI  UI"
