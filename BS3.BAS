@@ -1,8 +1,8 @@
     5 goto 50000:rem jump to start of progrm
    10 rem *** title screen ***
    12 print "{clr}";
-   15 o%=20:x%=23:y%=0:gosub 500
-   17 o%=21:x%=19:y%=20:gosub 500
+   15 o%=20:x%=23:y%=1:gosub 500
+   17 o%=21:x%=19:y%=19:gosub 500
    18 of%=0
    20 gs%=gs%+1
    25 getkey a$
@@ -14,7 +14,7 @@
   530 h% = peek(p%) : p%=p%+1
   535 dh% = h% + y% - 1
   540 for dy% = y% to dh%
-  550 if dy% < 0 or dy%> 24 then p%=p%+w%:goto 600
+  550 if dy% < 1 or dy%> 24 then p%=p%+w%:goto 600
   560 for dx% = x% to dw%
   570 if dx% < 0 or dx% > 79 then p%=p%+1:goto 590
   575 bank 4:c% = peek(p%):p%=p%+1
@@ -23,7 +23,7 @@
   600 next dy%
   610 rem now to the colours...
   620 for dy% = y% to dh%
-  630 if dy% < 0 or dy%> 24 then p%=p%+w%:goto 690
+  630 if dy% < 1 or dy%> 24 then p%=p%+w%:goto 690
   640 for dx% = x% to dw%
   650 if dx% < 0 or dx% >79 then p%=p%+1:goto 680
   660 bank 4:c% = peek(p%):p%=p%+1
@@ -33,7 +33,7 @@
   695 return
   700 rem *** draw map of tiles at of% ***
   705 print "{home}of%=";of%;"{left}       ";
-  710 for zy% = of%/5 to of%/5+4
+  710 for zy% = of%/5 to of%/5+5
   715 if zy%<=0 or zy%> 12 then goto 920
   720 for zx% = 1 to 15
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
@@ -60,10 +60,21 @@
   920 next zy%
   930 return
  1000 rem *** start level ***
- 1010 print "start level"
- 1020 getkey k$
+ 1010 s$="level 1"
+ 1015 print "{clr}";
+ 1017 x%=37:y%=11:gosub 1500
+ 1020 get k$:if k$="" then pk=pk+1:goto 1017
+ 1022 foreground 1
  1025 gs%=gs%+1
  1030 return
+ 1500 rem *** sub: print rainbow string(x%,y%,pk,s$) ***
+ 1510 cursor x%,y%
+ 1520 for k=1 to len(s$)
+ 1530 c$=mid$(s$,k,1)
+ 1540 foreground mod(k-1+pk,16)+16:print c$;
+ 1550 next k
+ 1560 for k=0 to (20-len(s$))*10:next k
+ 1570 return
  2000 rem *** draw lives/score/hiscore ***
  2010 print "{clr}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
  2020 return
