@@ -1,18 +1,33 @@
     1 ch=$1000:cl=$1800
+    2 t=0:zt=0
     5 goto 50000:rem jump to start of progrm
    10 rem *** title screen ***
-   20 bx%=-35:sx%=80:print "{clr}";
+   20 bx%=15:sx%=10:print "{clr}";
    30 gosub 1800:rem clear screen buffer
-   40 o%=20:x%=bx%:y%=1:gosub 500
-   50 o%=21:x%=sx%:y%=19:gosub 500
+   40 for s%=0 to 4
+   42 o%=20:x%=22+sin(t+s%*0.05)*20*sin(zt):y%=1+s%:gosub 400
+   44 next s%
+   50 for s%=0 to 4
+   52 o%=21:x%=18-sin(t+s%*0.05)*15*sin(zt):y%=19+s%:gosub 400
+   54 next s%
    60 gosub 1700:rem copy scrbuf to screen
-   70 bx%=bx%+1:sx%=sx%-1
+   70 rem bx%=bx%+1:sx%=sx%-1
    80 get a$:if a$<>"" then goto 110
    90 if bx%=90 then bx%=-35:sx%=80
+   95 t=t+0.05:zt=zt+0.01
   100 goto 30
   110 of%=0
   120 gs%=gs%+1
   130 return
+  400 rem *** dma draw slither s% of o% at x%,y% ***
+  410 p% = ob%(o%):bank 4
+  420 w% = peek(p%):p%=p%+1
+  430 dw% = w%+x%-1
+  432 h% = peek(p%):p%=p%+1
+  435 pc% = p%+h%*w%
+  440 dma 0,w%,p%+s%*w%,4,ch+y%*80+x%,4
+  450 dma 0,w%,pc%+s%*w%,4,cl+y%*80+x%,4
+  460 return
   500 rem *** draw object o% at x% , y% (with crop and transparency) ***
   510 p% = ob%(o%):bank 4
   520 w% = peek(p%) : p%=p%+1
