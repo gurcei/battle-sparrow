@@ -37,7 +37,7 @@
   680 next dx%
   690 next dy%
   695 return
-  700 rem *** draw map of tiles at of% ***
+  700 rem *** draw map of tiles ***
   710 for zy% = 0 to 12
   715 if zy%<=0 or zy%> 12 then goto 920
   720 for zx% = 1 to 15
@@ -104,8 +104,8 @@
  3000 rem *** draw background tiles ***
  3010 gosub 1800:rem clear scrbuf
  3020 if of%<0 then return
- 3030 dma 0, $780, $2000+80*of%,4, $1050, 4
- 3040 dma 0, $780, $4000+80*of%,4, $1850, 4
+ 3030 sr=$2000+80*of%:de=$1050:le=$780:tr%=32:gosub 50700:rem transparentdma
+ 3040 sr=$4000+80*of%:de=$1850:le=$780:tr%=0:gosub 50700:rem transparentdma
  3070 return
  4000 rem *** draw stars ***
  4010 return
@@ -145,6 +145,7 @@
  50100 rem *** init game data ***
  50105 bank 4:p = 0:dim lv$(13)
  50107 background 0:border 0
+ 50108 gosub 50500:rem init transparent dma struct
  50110 dim ob%(21):rem ptrs to object data
  50120 for k = 1 to 21
  50125 ob%(k)=p
@@ -160,6 +161,32 @@
  50200 read lv$(k)
  50210 next k
  50220 return
+ 50500 rem *** init transparent dma struct ***
+ 50510 bank 4
+ 50520 poke $ff0,$07:rem opt = enable transparency
+ 50530 poke $ff1,$86:rem opt = set transparency
+ 50540 poke $ff2,$20:rem       (transparency value)
+ 50550 poke $ff3,$00:rem end of options
+ 50560 poke $ff4,$00:rem copy
+ 50565 pokew $ff5,$0000:rem length
+ 50570 pokew $ff7,$1000:rem source addr
+ 50580 poke $ff9,$04:rem source bank
+ 50590 pokew $ffa,$1000:rem dest addr
+ 50600 poke $ffc,$04:rem dest bank
+ 50610 poke $ffd,$00:rem cmd msb (ignore)
+ 50620 pokew $ffe,$0000:rem modulo (ignore)
+ 50630 return
+ 50700 rem *** do transparent dma(sr,de,le,tr%) ***
+ 50710 bank 4
+ 50720 pokew $ff7,sr:rem source addr
+ 50730 pokew $ffa,de:rem dest addr
+ 50740 pokew $ff5,le:rem length
+ 50750 poke $ff2,tr%:rem transparency value
+ 50755 bank 128
+ 50760 poke $d702,4:rem dma list in bank 4
+ 50770 poke $d701,$0f:rem dmalist msb
+ 50780 poke $d705,$f0:rem dmalist lsb
+ 50790 return
  51000 rem *** obj1 = tile bl ***
  51010 data 5,5:rem w,h
  51020 data 102,174,186,174,186,102,186,174,186,174,102,174,186,174,186,102,186,174,186,174,124,102,102,102,102
