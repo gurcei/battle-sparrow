@@ -11,7 +11,11 @@
    52 o%=21:x%=18-sin(t+s%*0.05)*15*sin(zt):y%=19+s%:gosub 400
    54 next s%
    60 gosub 1700:rem copy scrbuf to screen
-   70 rem bx%=bx%+1:sx%=sx%-1
+   70 s$="programmed in basic 65 by gurce isikyildiz (ce ce) 2022"
+   71 x%=12:y%=11:gosub 1500
+   72 s$="press any key to begin!"
+   73 x%=30:y%=13:gosub 1500
+   74 pk=pk+1
    80 get a$:if a$<>"" then goto 110
    90 if bx%=90 then bx%=-35:sx%=80
    95 t=t+0.05:zt=zt+0.01
