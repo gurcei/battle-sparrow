@@ -149,8 +149,8 @@
  8010 get k$
  8020 if k$="a" then px%=px%-2:if px%<0 then px%=0
  8030 if k$="d" then px%=px%+2:if px%>76 then px%=76
- 8040 if k$="w" then of%=of%-1
- 8050 if k$="s" then of%=of%+1
+ 8040 if k$="w" then py%=py%-1:if py%<1 then py%=1
+ 8050 if k$="s" then py%=py%+1:if py%>21 then py%=21
  8060 return
  9000 rem *** check collisions ***
  9010 return
@@ -167,6 +167,7 @@
  10110 rem *** page flip ***
  10120 gosub 1700:rem copy scrbuf to screen
  10125 rem sleep 0.05
+ 10127 ff%=ff%+1:if ff%>8 then ff%=0:of%=of%-1
  10130 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
