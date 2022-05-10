@@ -57,8 +57,8 @@
   690 next dy%
   695 return
   700 rem *** draw map of tiles ***
-  710 for zy% = 0 to 12
-  715 if zy%<=0 or zy%> 12 then goto 920
+  710 for zy% = 0 to 19
+  715 if zy%<0 or zy%> 19 then goto 920
   720 for zx% = 1 to 15
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
   740 if c$="L" then o%=1
@@ -96,6 +96,7 @@
  1050 get k$:if k$="" then pk=pk+1:goto 1048
  1060 foreground 1
  1070 gs%=gs%+1
+ 1075 of%=20*5
  1080 return
  1500 rem *** sub: print rainbow string(x%,y%,pk,s$) ***
  1510 cursor x%,y%
@@ -122,8 +123,10 @@
  2020 return
  3000 rem *** draw background tiles ***
  3020 ex%=0:if of%<0 then ex%=-of%*80:if of%<-23 then return
- 3030 sr=$2000+80*of%+ex%:de=$1050+ex%:le=$780-ex%:tr%=32:gosub 50700:rem transparentdma
- 3040 sr=$4000+80*of%+ex%:de=$1850+ex%:le=$780-ex%:tr%=0:gosub 50700:rem transparentdma
+ 3025 xx%=0:if of%>15*5+1 then xx%=(of%-(15*5+1))*80
+ 3028 if xx%>=$780 then return
+ 3030 sr=$2000+80*of%+ex%:de=$1050+ex%:le=$780-ex%-xx%:tr%=32:gosub 50700:rem transparentdma
+ 3040 sr=$4000+80*of%+ex%:de=$1850+ex%:le=$780-ex%-xx%:tr%=0:gosub 50700:rem transparentdma
  3070 return
  4000 rem *** draw stars ***
  4005 bank 4
@@ -169,7 +172,7 @@
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
  50010 goto 50005
  50100 rem *** init game data ***
- 50105 bank 4:p = 0:dim lv$(13)
+ 50105 bank 4:p = 0:dim lv$(20)
  50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
  50107 background 0:border 0
  50108 gosub 50500:rem init transparent dma struct
@@ -184,7 +187,7 @@
  50170 next k
  50175 gs%=gs%+1
  50180 rem read level data
- 50190 for k = 0 to 12
+ 50190 for k = 0 to 19
  50200 read lv$(k)
  50210 next k
  50220 return
@@ -362,16 +365,23 @@
  52140 data 16,18,5,19,19,32,1,14,25,32,11,5,25,32,20,15,32,2,5,7,9,14,33
  52150 data 71,72,73,74,75,0,77,78,79,0,65,66,67,0,69,70,0,72,73,74,75,76,77
  53000 rem *** level 1 ***
- 53010 data "               "
- 53020 data " O{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}P UI  UI"
- 53030 data " {CBM-G}x.{CBM-P}.x{CBM-M} JxIUxK"
- 53040 data " J{CBM-P}K J{CBM-P}K  JxxK "
- 53050 data "          UxxI "
- 53060 data "  U{CBM-T}I    UxKJxI"
- 53070 data "  {CBM-G}x{CBM-M}    JK  JK"
- 53080 data "  {CBM-G}xxI         "
- 53090 data "  J{CBM-P}xxI        "
- 53100 data "    Jxx{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I"
- 53110 data "     J.x.x.x.x{CBM-M}"
- 53120 data "      J{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}K"
- 53130 data ""
+ 53010 data " O{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}P UI  UI"
+ 53020 data " {CBM-G}x.{CBM-P}.x{CBM-M} JxIUxK"
+ 53030 data " J{CBM-P}K J{CBM-P}K  JxxK "
+ 53040 data "          UxxI "
+ 53050 data "  U{CBM-T}I    UxKJxI"
+ 53060 data "  {CBM-G}x{CBM-M}    JK  JK"
+ 53070 data "  {CBM-G}xxI         "
+ 53080 data "  J{CBM-P}xxI        "
+ 53090 data "    Jxx{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}{CBM-T}I"
+ 53100 data "     J.x.x.x.x{CBM-M}"
+ 53110 data "      J{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}{CBM-P}K"
+ 53120 data "O{CBM-T}I            "
+ 53130 data "{CBM-G}..I   UIUIUIUI"
+ 53140 data "J.x.P  {CBM-G}.xxxx.{CBM-M}"
+ 53150 data " L.x.I JKJKJKJK"
+ 53160 data "  J.x.P        "
+ 53170 data "   L.x.I O{CBM-T}{CBM-T}{CBM-T}P "
+ 53180 data "    J{CBM-P}{CBM-P}{SHIFT-@} {CBM-G}x.x{CBM-M} "
+ 53190 data "         {CBM-G}.x.{CBM-M} "
+ 53200 data "         L{CBM-P}{CBM-P}{CBM-P}{SHIFT-@} "
