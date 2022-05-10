@@ -121,9 +121,9 @@
  2010 print "{home}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
  2020 return
  3000 rem *** draw background tiles ***
- 3020 if of%<0 then return
- 3030 sr=$2000+80*of%:de=$1050:le=$780:tr%=32:gosub 50700:rem transparentdma
- 3040 sr=$4000+80*of%:de=$1850:le=$780:tr%=0:gosub 50700:rem transparentdma
+ 3020 ex%=0:if of%<0 then ex%=-of%*80:if of%<-23 then return
+ 3030 sr=$2000+80*of%+ex%:de=$1050+ex%:le=$780-ex%:tr%=32:gosub 50700:rem transparentdma
+ 3040 sr=$4000+80*of%+ex%:de=$1850+ex%:le=$780-ex%:tr%=0:gosub 50700:rem transparentdma
  3070 return
  4000 rem *** draw stars ***
  4005 bank 4
