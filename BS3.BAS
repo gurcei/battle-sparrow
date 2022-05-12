@@ -147,10 +147,12 @@
  7010 return
  8000 rem *** check input ***
  8010 get k$
- 8020 if k$="a" then px%=px%-2:if px%<0 then px%=0
- 8030 if k$="d" then px%=px%+2:if px%>76 then px%=76
- 8040 if k$="w" then py%=py%-1:if py%<1 then py%=1
- 8050 if k$="s" then py%=py%+1:if py%>21 then py%=21
+ 8015 v=joy(2):b=v and 128:v = v and 127
+ 8020 if v>=6 and v<=8 then px%=px%-2:if px%<0 then px%=0
+ 8030 if v>=2 and v<=4 then px%=px%+2:if px%>76 then px%=76
+ 8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<1 then py%=1
+ 8050 if v>=4 and v<=6 then py%=py%+1:if py%>22 then py%=22
+ 8055 if b=128 then fi=1:rem fire button
  8060 return
  9000 rem *** check collisions ***
  9010 return
