@@ -144,15 +144,36 @@
  5000 rem *** draw baddies ***
  5005 bank 4
  5010 fork=0to10
- 5020 if bv%(k)=1 then begin
- 5030 x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 500
- 5040 bend
- 5050 if bc%(k)=1 then begin
- 5060 poke $1000+bb%(k)*80+ba%(k),93
- 5070 poke $1800+bb%(k)*80+ba%(k),6
- 5080 bend
+ 5020   if bv%(k)=1 then begin
+ 5030     x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 500
+ 5035     bx%(k)=bx%(k)-1:if bx%(k)<-3 then bv%(k)=0
+ 5037 if k=0 then print bx%(0),by%(0)
+ 5040   bend
+ 5050   if bc%(k)=1 then begin
+ 5060     poke $1000+bb%(k)*80+ba%(k),93
+ 5070     poke $1800+bb%(k)*80+ba%(k),6
+ 5080   bend
  5090 nextk
- 5100 return
+ 5100 rem *** check if we've triggered the next wave? ***
+ 5102 if of% = lo% then return:rem return if same as last offset
+ 5104 lo%=of%:print of%
+ 5110 fork=0to6:rem check each wave
+ 5120   if wt%(k)=of% then begin
+ 5130     k=6
+ 5140     forl=0to10:rem initialise baddies in wave
+ 5150       bt%(l)=15:rem wv%(k)
+ 5160       bp%(l)=0
+ 5170       bx%(l)=80+l*5
+ 5180       by%(l)=4
+ 5190       bv%(l)=1
+ 5200       br%(l)=0
+ 5210       ba%(l)=0
+ 5220       bb%(l)=0
+ 5230       bc%(l)=0
+ 5240     next l
+ 5250   bend
+ 5260 nextk
+ 5270 return
  6000 rem *** draw players ***
  6005 ch=$1000:cl=$1800
  6010 o%=18:x%=px%:y%=py%:gosub 500
@@ -200,7 +221,7 @@
  10110 rem *** page flip ***
  10120 gosub 1700:rem copy scrbuf to screen
  10125 rem sleep 0.05
- 10127 ff%=ff%+1:if ff%>8 then ff%=0:of%=of%-1
+ 10127 ff%=ff%+1:if ff%>12 then ff%=0:of%=of%-1
  10130 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
@@ -209,7 +230,7 @@
  50101 dim wv%(6):rem wave-type, 0=baddie1,1=baddie2,2=rocks,3=sparrow
  50102 wv%(0)=0:wv%(1)=1:wv%(2)=2:wv%(3)=1:wv%(4)=0:wv%(5)=1:wv%(6)=3
  50103 dim wt%(6):rem wave-time trigger
- 50104 wt%(0)=3:wt%(1)=6:wt%(2)=9:wt%(3)=12:wt%(4)=15:wt%(5)=18:wt%(6)=21
+ 50104 wt%(0)=90:wt%(1)=80:wt%(2)=70:wt%(3)=60:wt%(4)=50:wt%(5)=40:wt%(6)=20
  50105 bank 4:p = 0:dim lv$(20)
  50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
  50107 dim fx%(5),fy%(5),fv%(5):rem player fire x,y,visible
