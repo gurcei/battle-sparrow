@@ -160,7 +160,7 @@
  6030 iffv%(k)then begin
  6040 poke $1000+fy%(k)*80+fx%(k),30
  6050 poke $1800+fy%(k)*80+fx%(k),2
- 6060 if fy%(k)=0 then fv%(k)=0:else fy%(k)=fy%(k)-1
+ 6060 fy%(k)=fy%(k)-2:if fy%(k)<=0 then fv%(k)=0
  6070 bend
  6080 next k
  6090 return
