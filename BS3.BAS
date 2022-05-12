@@ -173,7 +173,7 @@
  8030 if v>=2 and v<=4 then px%=px%+2:if px%>76 then px%=76
  8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<2 then py%=2
  8050 if v>=4 and v<=6 then py%=py%+1:if py%>22 then py%=22
- 8060 if b=128 then begin:rem fire button
+ 8060 if b=128 and pb=0 then begin:rem fire button
  8070   for k=0to5
  8080   if fv%(k)=0 then begin
  8090     fv%(k)=1:fx%(k)=px%+fi%:fy%(k)=py%-1:k=5
@@ -183,6 +183,7 @@
  8130   bend
  8140   next k
  8150 bend
+ 8155 pb=b
  8160 return
  9000 rem *** check collisions ***
  9010 return
