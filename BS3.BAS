@@ -159,11 +159,10 @@
  5104 lo%=of%:print of%
  5110 fork=0to6:rem check each wave
  5120   if wt%(k)=of% then begin
- 5130     k=6
  5140     forl=0to10:rem initialise baddies in wave
- 5150       bt%(l)=15:rem wv%(k)
+ 5150       bt%(l)=wv%(k)
  5160       bp%(l)=0
- 5170       bx%(l)=80+l*5
+ 5170       bx%(l)=80+l*6
  5180       by%(l)=4
  5190       bv%(l)=1
  5200       br%(l)=0
@@ -171,6 +170,7 @@
  5220       bb%(l)=0
  5230       bc%(l)=0
  5240     next l
+ 5245     k=6
  5250   bend
  5260 nextk
  5270 return
@@ -228,7 +228,7 @@
  50010 goto 50005
  50100 rem *** init game data ***
  50101 dim wv%(6):rem wave-type, 0=baddie1,1=baddie2,2=rocks,3=sparrow
- 50102 wv%(0)=0:wv%(1)=1:wv%(2)=2:wv%(3)=1:wv%(4)=0:wv%(5)=1:wv%(6)=3
+ 50102 wv%(0)=15:wv%(1)=17:wv%(2)=16:wv%(3)=17:wv%(4)=15:wv%(5)=17:wv%(6)=16
  50103 dim wt%(6):rem wave-time trigger
  50104 wt%(0)=90:wt%(1)=80:wt%(2)=70:wt%(3)=60:wt%(4)=50:wt%(5)=40:wt%(6)=20
  50105 bank 4:p = 0:dim lv$(20)
