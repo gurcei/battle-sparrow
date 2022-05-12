@@ -17,6 +17,7 @@
    54 next s%
    60 gosub 1700:rem copy scrbuf to screen
    80 get a$:if a$<>"" then goto 110
+   85 if joy(2) and 128 then goto 110
    90 if bx%=90 then bx%=-35:sx%=80
    95 t=t+0.05:zt=zt+0.01
   100 goto 30
@@ -85,7 +86,9 @@
   930 return
  1000 rem *** start level ***
  1010 ch=$2000:cl=$4000
- 1011 px%=39:py%=21
+ 1011 px%=39:py%=21:rem player pos
+ 1012 fork=0to5:fx%(k)=0:fy%(k)=0:fv%(k)=0:nextk
+ 1013 fork=0to10:bx%(k)=0:by%(k)=0:bv%(k)=0:br%(k)=0:ba%(k)=0:bb%(k)=0:bc%(k)=0:nextk:rem reset baddies
  1015 gosub 1900:rem clear map
  1020 s$="loading level 1..."
  1030 print "{clr}";
@@ -93,6 +96,7 @@
  1045 gosub 700:rem copy tiles into map
  1047 s$="level 1 ready!    "
  1048 x%=33:y%=11:gosub 1500
+ 1049 if joy(2) and 128 then goto 1060
  1050 get k$:if k$="" then pk=pk+1:goto 1048
  1060 foreground 1
  1070 gs%=gs%+1
@@ -138,11 +142,28 @@
  4060 next k
  4070 return
  5000 rem *** draw baddies ***
- 5010 return
+ 5005 bank 4
+ 5010 fork=0to10
+ 5020 if bv%(k)=1 then begin
+ 5030 x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 500
+ 5040 bend
+ 5050 if bc%(k)=1 then begin
+ 5060 poke $1000+bb%(k)*80+ba%(k),93
+ 5070 poke $1800+bb%(k)*80+ba%(k),6
+ 5080 bend
+ 5090 nextk
+ 5100 return
  6000 rem *** draw players ***
  6005 ch=$1000:cl=$1800
  6010 o%=18:x%=px%:y%=py%:gosub 500
- 6020 return
+ 6020 fork=0to5
+ 6030 iffv%(k)then begin
+ 6040 poke $1000+fy%(k)*80+fx%(k),30
+ 6050 poke $1800+fy%(k)*80+fx%(k),2
+ 6060 if fy%(k)=0 then fv%(k)=0:else fy%(k)=fy%(k)-1
+ 6070 bend
+ 6080 next k
+ 6090 return
  7000 rem *** draw fire ***
  7010 return
  8000 rem *** check input ***
@@ -150,10 +171,19 @@
  8015 v=joy(2):b=v and 128:v = v and 127
  8020 if v>=6 and v<=8 then px%=px%-2:if px%<0 then px%=0
  8030 if v>=2 and v<=4 then px%=px%+2:if px%>76 then px%=76
- 8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<1 then py%=1
+ 8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<2 then py%=2
  8050 if v>=4 and v<=6 then py%=py%+1:if py%>22 then py%=22
- 8055 if b=128 then fi=1:rem fire button
- 8060 return
+ 8060 if b=128 then begin:rem fire button
+ 8070   for k=0to5
+ 8080   if fv%(k)=0 then begin
+ 8090     fv%(k)=1:fx%(k)=px%+fi%:fy%(k)=py%-1:k=5
+ 8100     if fi%=0 then s%=1:else s%=4
+ 8110     sound s%,3000,10,1,1000,200,1
+ 8120     if fi%=0 then fi%=3:else fi%=0
+ 8130   bend
+ 8140   next k
+ 8150 bend
+ 8160 return
  9000 rem *** check collisions ***
  9010 return
  10000 rem *** main game loop ***
@@ -175,11 +205,25 @@
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
  50010 goto 50005
  50100 rem *** init game data ***
+ 50101 dim wv%(6):rem wave-type, 0=baddie1,1=baddie2,2=rocks,3=sparrow
+ 50102 wv%(0)=0:wv%(1)=1:wv%(2)=2:wv%(3)=1:wv%(4)=0:wv%(5)=1:wv%(6)=3
+ 50103 dim wt%(6):rem wave-time trigger
+ 50104 wt%(0)=3:wt%(1)=6:wt%(2)=9:wt%(3)=12:wt%(4)=15:wt%(5)=18:wt%(6)=21
  50105 bank 4:p = 0:dim lv$(20)
  50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
- 50107 background 0:border 0
- 50108 gosub 50500:rem init transparent dma struct
+ 50107 dim fx%(5),fy%(5),fv%(5):rem player fire x,y,visible
+ 50108 background 0:border 0
+ 50109 gosub 50500:rem init transparent dma struct
  50110 dim ob%(24):rem ptrs to object data
+ 50111 dim bt%(10):rem baddie type
+ 50112 dim bp%(10):rem baddie pattern type
+ 50113 dim bx%(10):rem baddie x
+ 50114 dim by%(10):rem baddie y
+ 50115 dim bv%(10):rem baddie visible
+ 50116 dim br%(10):rem baddie timer
+ 50117 dim ba%(10):rem baddie fire x
+ 50118 dim bb%(10):rem baddie fire y
+ 50119 dim bc%(10):rem baddie fire visible
  50120 for k = 1 to 24
  50125 ob%(k)=p
  50130 read w:poke p,w:p=p+1
