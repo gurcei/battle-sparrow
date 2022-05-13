@@ -212,8 +212,6 @@
  6070 bend
  6080 next k
  6090 return
- 7000 rem *** draw fire ***
- 7010 return
  8000 rem *** check input ***
  8010 get k$
  8015 v=joy(2):b=v and 128:v = v and 127
@@ -234,7 +232,24 @@
  8155 pb=b
  8160 return
  9000 rem *** check collisions ***
- 9010 return
+ 9010 rem check player-fire hits enemy
+ 9020 for pi=0 to 5
+ 9030   if fv%(pi)=1 then begin
+ 9035     x%=fx%(pi):y%=fy%(pi)
+ 9040     for bi=0 to 5
+ 9050       if bv%(bi) = 1 then begin
+ 9060         x2%=bx%(bi):y2%=by%(bi)
+ 9070         if x%>=x2% and x%<=x2%+3 and y%>=y2% and y%<=y2%+2 then begin
+ 9075           fv%(pi)=0:ty%=bt%(bi)
+ 9080           if ty%=17 then bs%=mod(bs%+3,6):sound3+bs%,5000,10,1,3000,500,3
+ 9090           if ty%=15 or ty%=16 then bv%(bi)=0:bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3
+ 9100           bi=5
+ 9110         bend
+ 9120       bend
+ 9130     next bi
+ 9140   bend
+ 9150 next pi
+ 9160 return
  10000 rem *** main game loop ***
  10010 gosub 2000:rem draw lives/score/hiscore
  10015 gosub 1800:rem clear scrbuf
@@ -242,7 +257,6 @@
  10030 gosub 3000:rem draw background tiles
  10040 gosub 5000:rem draw baddies
  10050 gosub 6000:rem draw players
- 10060 gosub 7000:rem draw fire
  10070 gosub 8000:rem check input
  10080 gosub 9000:rem check collisions
  10110 rem *** page flip ***
