@@ -202,7 +202,8 @@
  5620 return
  6000 rem *** draw players ***
  6005 ch=$1000:cl=$1800
- 6010 o%=18:x%=px%:y%=py%:gosub 500
+ 6010 o%=18:x%=px%:y%=py%:gosub 5500
+ 6015 bank 4
  6020 fork=0to5
  6030 iffv%(k)then begin
  6040 poke $1000+fy%(k)*80+fx%(k),30
@@ -218,8 +219,8 @@
  8015 v=joy(2):b=v and 128:v = v and 127
  8020 if v>=6 and v<=8 then px%=px%-2:if px%<0 then px%=0
  8030 if v>=2 and v<=4 then px%=px%+2:if px%>76 then px%=76
- 8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<2 then py%=2
- 8050 if v>=4 and v<=6 then py%=py%+1:if py%>22 then py%=22
+ 8040 if v=1 or v=2 or v=8 then py%=py%-1:if py%<1 then py%=1
+ 8050 if v>=4 and v<=6 then py%=py%+1:if py%>21 then py%=21
  8060 if b=128 and pb=0 then begin:rem fire button
  8070   for k=0to5
  8080   if fv%(k)=0 then begin
@@ -248,7 +249,10 @@
  10120 gosub 1700:rem copy scrbuf to screen
  10125 rem sleep 0.05
  10127 ff%=ff%+1:if ff%>12 then ff%=0:of%=of%-1
- 10130 return
+ 10130 rem *** throttle game speed & poll music segment ***
+ 10140 t1=ti
+ 10150 if (ti-t1) < 0.05 then goto 10150
+ 10160 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
  50010 goto 50005
