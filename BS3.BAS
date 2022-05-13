@@ -146,9 +146,11 @@
  5010 fork=0to10
  5020 if bv%(k)=1 then begin
  5030 x%=bx%(k):y%=by%(k):o%=bt%(k):gosub5500
- 5035 bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
+ 5033 if bt%(k)=17 then by%(k)=by%(k)+1:ifby%(k)>24thenbv%(k)=0
+ 5034 if bt%(k)=16 then bx%(k)=bx%(k)+1:ifbx%(k)>79thenbv%(k)=0
+ 5035 if bt%(k)=15 then bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
  5036 rem if k=0 then print "bc=";bc%(k);"df=";df%;ba%(k);bb%(k)
- 5037 if bc%(k)=0 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3
+ 5037 if bc%(k)=0 and bt%(k)<>17 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3
  5040 bend
  5045 bank 4
  5050 ifbc%(k)=1thenbegin
@@ -165,8 +167,10 @@
  5140     forl=0to5:rem initialise baddies in wave
  5150       bt%(l)=wv%(k)
  5160       bp%(l)=0
- 5170       bx%(l)=80+l*9
+ 5170       if wv%(k)=15 then bx%(l)=80+l*9
+ 5171       if wv%(k)=16 then bx%(l)=0-l*9
  5180       by%(l)=4
+ 5182       if wv%(k)=17 then bx%(l)=int(rnd(1)*10)*7+5:by%(l)=-3 - int(rnd(1)*5)*5
  5190       bv%(l)=1
  5200       br%(l)=0
  5210       ba%(l)=0
