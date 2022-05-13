@@ -249,7 +249,18 @@
  9130     next bi
  9140   bend
  9150 next pi
- 9160 return
+ 9170 rem check enemy-fir hits player
+ 9180 for bi=0 to 5
+ 9190   if bc%(bi)=1 then begin:rem baddie fire visible?
+ 9200     x%=ba%(bi):y%=bb%(bi)
+ 9210     if x%>=px% and x%<=px%+3 and y%>=py% and y%<=py%+2 then begin
+ 9220       bc%(bi)=0
+ 9230       rem todo - decrease player energy
+ 9240       bs%=mod(bs%+3,6):sound3+bs%,4000,20,2,2000,500,3
+ 9250     bend
+ 9260   bend
+ 9270 next bi
+ 9280 return
  10000 rem *** main game loop ***
  10010 gosub 2000:rem draw lives/score/hiscore
  10015 gosub 1800:rem clear scrbuf
@@ -265,7 +276,7 @@
  10127 ff%=ff%+1:if ff%>12 then ff%=0:of%=of%-1
  10130 rem *** throttle game speed & poll music segment ***
  10140 t1=ti
- 10150 if (ti-t1) < 0.05 then goto 10150
+ 10150 if (ti-t1) < 0.02 then goto 10150
  10160 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
