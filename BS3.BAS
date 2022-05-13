@@ -162,10 +162,10 @@
  5104 lo%=of%
  5110 fork=0to6:rem check each wave
  5120   if wt%(k)=of% then begin
- 5140     forl=0to10:rem initialise baddies in wave
+ 5140     forl=0to5:rem initialise baddies in wave
  5150       bt%(l)=wv%(k)
  5160       bp%(l)=0
- 5170       bx%(l)=80+l*6
+ 5170       bx%(l)=80+l*9
  5180       by%(l)=4
  5190       bv%(l)=1
  5200       br%(l)=0
