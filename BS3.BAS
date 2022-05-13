@@ -144,19 +144,18 @@
  5000 rem *** draw baddies ***
  5005 bank 4
  5010 fork=0to10
- 5020   if bv%(k)=1 then begin
- 5030     x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 5500
- 5035     bx%(k)=bx%(k)-1:if bx%(k)<-3 then bv%(k)=0
- 5037 if k=0 then print bx%(0),by%(0)
- 5040   bend
- 5050   if bc%(k)=1 then begin
- 5060     poke $1000+bb%(k)*80+ba%(k),93
- 5070     poke $1800+bb%(k)*80+ba%(k),6
- 5080   bend
+ 5020 if bv%(k)=1 then begin
+ 5030 x%=bx%(k):y%=by%(k):o%=bt%(k):gosub5500
+ 5035 bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
+ 5040 bend
+ 5050 ifbc%(k)=1thenbegin
+ 5060 poke$1000+bb%(k)*80+ba%(k),93
+ 5070 poke$1800+bb%(k)*80+ba%(k),6
+ 5080 bend
  5090 nextk
  5100 rem *** check if we've triggered the next wave? ***
  5102 if of% = lo% then return:rem return if same as last offset
- 5104 lo%=of%:print of%
+ 5104 lo%=of%
  5110 fork=0to6:rem check each wave
  5120   if wt%(k)=of% then begin
  5140     forl=0to10:rem initialise baddies in wave
@@ -175,23 +174,23 @@
  5260 nextk
  5270 return
  5500 rem *** dma-draw of baddies(x%,y%,o%) ***
- 5510 p% = ob%(o%):bank 4
- 5520 w% = peek(p%):p%=p%+1
+ 5510 p%=ob%(o%):bank4
+ 5520 w%=peek(p%):p%=p%+1
  5525 dw%=w%+x%-1
- 5530 h% = peek(p%):p%=p%+1
+ 5530 h%=peek(p%):p%=p%+1
  5535 dh%=h%+y%-1
  5537 p2%=p%+w%*h%
- 5540 if x%>79 or dw%<0 or y%>24 or dh%<0 then return:rem completely off screen
- 5541 le=w%:ix%=0:xx%=x%:if xx%<0 then xx%=0:ix%=xx%-x%:le=le-ix%
- 5542 if dw%>79 then le=le-(dw%-79):dw%=79
- 5550 for y%=y% to dh%
- 5560   if y%>0 and y%<24 then begin
- 5565     ic%=y%*80+xx%
- 5570     sr=p%+ix%:de=$1000+ic%:tr%=32:gosub 50700
- 5580     sr=p2%+ix%:de=$1800+ic%:tr%=0:gosub 50700
- 5590   bend
- 5600   p%=p%+w%:p2%=p2%+w%
- 5610 next y%
+ 5540 ifx%>79ordw%<0ory%>24ordh%<0thenreturn:rem completely off screen
+ 5541 le=w%:ix%=0:xx%=x%:ifxx%<0then xx%=0:ix%=xx%-x%:le=le-ix%
+ 5542 ifdw%>79thenle=le-(dw%-79):dw%=79
+ 5550 fory%=y%todh%
+ 5560 ify%>0andy%<24thenbegin
+ 5565 ic%=y%*80+xx%
+ 5570 sr=p%+ix%:de=$1000+ic%:tr%=32:gosub 50700
+ 5580 sr=p2%+ix%:de=$1800+ic%:tr%=0:gosub 50700
+ 5590 bend
+ 5600 p%=p%+w%:p2%=p2%+w%
+ 5610 nexty%
  5620 return
  6000 rem *** draw players ***
  6005 ch=$1000:cl=$1800
@@ -295,15 +294,15 @@
  50620 pokew $ffe,$0000:rem modulo (ignore)
  50630 return
  50700 rem *** do transparent dma(sr,de,le,tr%) ***
- 50710 bank 4
- 50720 pokew $ff7,sr:rem source addr
- 50730 pokew $ffa,de:rem dest addr
- 50740 pokew $ff5,le:rem length
- 50750 poke $ff2,tr%:rem transparency value
- 50755 bank 128
- 50760 poke $d702,4:rem dma list in bank 4
- 50770 poke $d701,$0f:rem dmalist msb
- 50780 poke $d705,$f0:rem dmalist lsb
+ 50710 bank4
+ 50720 pokew$ff7,sr:rem source addr
+ 50730 pokew$ffa,de:rem dest addr
+ 50740 pokew$ff5,le:rem length
+ 50750 poke$ff2,tr%:rem transparency value
+ 50755 bank128
+ 50760 poke$d702,4:rem dma list in bank 4
+ 50770 poke$d701,$0f:rem dmalist msb
+ 50780 poke$d705,$f0:rem dmalist lsb
  50790 return
  51000 rem *** obj1 = tile bl ***
  51010 data 5,5:rem w,h
