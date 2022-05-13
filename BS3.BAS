@@ -145,7 +145,7 @@
  5005 bank 4
  5010 fork=0to10
  5020   if bv%(k)=1 then begin
- 5030     x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 500
+ 5030     x%=bx%(k):y%=by%(k):o%=bt%(k):gosub 5500
  5035     bx%(k)=bx%(k)-1:if bx%(k)<-3 then bv%(k)=0
  5037 if k=0 then print bx%(0),by%(0)
  5040   bend
@@ -174,6 +174,25 @@
  5250   bend
  5260 nextk
  5270 return
+ 5500 rem *** dma-draw of baddies(x%,y%,o%) ***
+ 5510 p% = ob%(o%):bank 4
+ 5520 w% = peek(p%):p%=p%+1
+ 5525 dw%=w%+x%-1
+ 5530 h% = peek(p%):p%=p%+1
+ 5535 dh%=h%+y%-1
+ 5537 p2%=p%+w%*h%
+ 5540 if x%>79 or dw%<0 or y%>24 or dh%<0 then return:rem completely off screen
+ 5541 le=w%:ix%=0:xx%=x%:if xx%<0 then xx%=0:ix%=xx%-x%:le=le-ix%
+ 5542 if dw%>79 then le=le-(dw%-79):dw%=79
+ 5550 for y%=y% to dh%
+ 5560   if y%>0 and y%<24 then begin
+ 5565     ic%=y%*80+xx%
+ 5570     sr=p%+ix%:de=$1000+ic%:tr%=32:gosub 50700
+ 5580     sr=p2%+ix%:de=$1800+ic%:tr%=0:gosub 50700
+ 5590   bend
+ 5600   p%=p%+w%:p2%=p2%+w%
+ 5610 next y%
+ 5620 return
  6000 rem *** draw players ***
  6005 ch=$1000:cl=$1800
  6010 o%=18:x%=px%:y%=py%:gosub 500
