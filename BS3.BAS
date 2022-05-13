@@ -249,7 +249,7 @@
  9130     next bi
  9140   bend
  9150 next pi
- 9170 rem check enemy-fir hits player
+ 9170 rem check enemy-fire hits player
  9180 for bi=0 to 5
  9190   if bc%(bi)=1 then begin:rem baddie fire visible?
  9200     x%=ba%(bi):y%=bb%(bi)
@@ -260,7 +260,17 @@
  9250     bend
  9260   bend
  9270 next bi
- 9280 return
+ 9290 rem check if enemy body hit player
+ 9300 for bi=0 to 5
+ 9310   if bv%(bi)=1 then begin
+ 9320     x%=bx%(bi):y%=by%(bi)
+ 9330     if x%>=px%-3 and x%<=px%+3 and y%>=py%-2 and y%<=py%+2 then begin
+ 9340       rem todo - decrease player energy
+ 9350       bs%=mod(bs%+3,6):sound3+bs%,4000,20,2,2000,500,3
+ 9360     bend
+ 9370   bend
+ 9380 next bi
+ 9390 return
  10000 rem *** main game loop ***
  10010 gosub 2000:rem draw lives/score/hiscore
  10015 gosub 1800:rem clear scrbuf
