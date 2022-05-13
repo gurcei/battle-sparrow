@@ -147,10 +147,14 @@
  5020 if bv%(k)=1 then begin
  5030 x%=bx%(k):y%=by%(k):o%=bt%(k):gosub5500
  5035 bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
+ 5036 rem if k=0 then print "bc=";bc%(k);"df=";df%;ba%(k);bb%(k)
+ 5037 if bc%(k)=0 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3
  5040 bend
+ 5045 bank 4
  5050 ifbc%(k)=1thenbegin
  5060 poke$1000+bb%(k)*80+ba%(k),93
  5070 poke$1800+bb%(k)*80+ba%(k),6
+ 5075 bb%(k)=bb%(k)+1:if bb%(k)>24 then bc%(k)=0
  5080 bend
  5090 nextk
  5100 rem *** check if we've triggered the next wave? ***
@@ -180,9 +184,9 @@
  5530 h%=peek(p%):p%=p%+1
  5535 dh%=h%+y%-1
  5537 p2%=p%+w%*h%
- 5540 ifx%>79ordw%<0ory%>24ordh%<0thenreturn:rem completely off screen
- 5541 le=w%:ix%=0:xx%=x%:ifxx%<0then xx%=0:ix%=xx%-x%:le=le-ix%
- 5542 ifdw%>79thenle=le-(dw%-79):dw%=79
+ 5540 df%=1:ifx%>79ordw%<0ory%>24ordh%<0thendf%=0:return:rem completely off screen
+ 5541 le=w%:ix%=0:xx%=x%:ifxx%<0then xx%=0:ix%=xx%-x%:le=le-ix%:df%=2
+ 5542 ifdw%>79thenle=le-(dw%-79):dw%=79:df%=2
  5550 fory%=y%todh%
  5560 ify%>0andy%<24thenbegin
  5565 ic%=y%*80+xx%
