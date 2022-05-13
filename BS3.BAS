@@ -150,7 +150,7 @@
  5034 if bt%(k)=16 then bx%(k)=bx%(k)+1:ifbx%(k)>79thenbv%(k)=0
  5035 if bt%(k)=15 then bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
  5036 rem if k=0 then print "bc=";bc%(k);"df=";df%;ba%(k);bb%(k)
- 5037 if bc%(k)=0 and bt%(k)<>17 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3
+ 5037 if bc%(k)=0 and bt%(k)<>17 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3:bs%=mod(bs%+3,6):sound2+bs%,10000,10,1,8000,200,0
  5040 bend
  5045 bank 4
  5050 ifbc%(k)=1thenbegin
