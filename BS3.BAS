@@ -85,7 +85,7 @@
   920 next zy%
   930 return
  1000 rem *** start level ***
- 1010 ch=$2000:cl=$4000
+ 1010 ch=$2000:cl=$4000:ta%=0:tb%=0:tc%=0
  1011 px%=39:py%=21:pe%=10:sc%=0:rem player pos, energy, score
  1012 fork=0to5:fx%(k)=0:fy%(k)=0:fv%(k)=0:nextk
  1013 fork=0to10:bx%(k)=0:by%(k)=0:bv%(k)=0:br%(k)=0:ba%(k)=0:bb%(k)=0:bc%(k)=0:nextk:rem reset baddies
@@ -235,7 +235,7 @@
  6540 ta%=1:rem timer for player hit flashing
  6550 return
  6700 rem *** birdie was hit ***
- 6710 tc%=1:rem timer for birdie hit flashing
+ 6710 ta%=1:rem timer for birdie hit flashing
  6712 sc%=sc%+800
  6715 sound 5,8000,5*(11-be%),1,5000,500,0
  6720 be%=be%-1
@@ -331,8 +331,14 @@
  10130 rem *** throttle game speed & poll music segment ***
  10140 t1=ti
  10150 if (ti-t1) < 0.02 then goto 10150
- 10160 return
+ 10160 if ta%>0 then begin
+ 10170   bank 128:poke 53280,ta%+15
+ 10180   ta%=ta%+1
+ 10190   if ta%=16 then ta%=0:poke 53280,0
+ 10200 bend
+ 10210 return
  20000 rem *** game over ***
+ 20005 border 0
  20010 x%=37:y%=12:s$="game over":pk=0
  20020 sound 1,6000,50,1,2000,50,0
  20030 sound 4,6100,50,1,2100,50,0
