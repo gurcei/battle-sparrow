@@ -222,7 +222,9 @@
  6045 if peek($1800+ic%)=6 then fv%(k)=0:gosub 6700:rem hit birdie
  6046 if peek($1800+ic%)=3 then fv%(k)=0:gosub 6800:rem hit turret
  6050 poke $1800+ic%,2
- 6060 fy%(k)=fy%(k)-2:if fy%(k)<=0 then fv%(k)=0
+ 6060 fy%(k)=fy%(k)-2
+ 6062 if fy%(k)=0 then fy%(k)=1:rem edge case nicety
+ 6064 if fy%(k)<=0 then fv%(k)=0
  6070 bend
  6080 next k
  6090 return
@@ -234,6 +236,7 @@
  6550 return
  6700 rem *** birdie was hit ***
  6710 tc%=1:rem timer for birdie hit flashing
+ 6712 sc%=sc%+800
  6715 sound 5,8000,5*(11-be%),1,5000,500,0
  6720 be%=be%-1
  6730 if be%=0 then stop
@@ -283,8 +286,8 @@
  9060         x2%=bx%(bi):y2%=by%(bi)
  9070         if x%>=x2% and x%<=x2%+3 and y%>=y2% and y%<=y2%+2 then begin
  9075           fv%(pi)=0:ty%=bt%(bi)
- 9080           if ty%=17 then bs%=mod(bs%+3,6):sound3+bs%,5000,10,1,3000,500,3
- 9090           if ty%=15 or ty%=16 then bv%(bi)=0:bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3
+ 9080           if ty%=17 then bs%=mod(bs%+3,6):sound3+bs%,5000,10,1,3000,500,3:sc%=sc%+200
+ 9090           if ty%=15 or ty%=16 then bv%(bi)=0:bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3:sc%=sc%+200
  9100           bi=5
  9110         bend
  9120       bend
