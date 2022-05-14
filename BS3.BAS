@@ -241,7 +241,7 @@
  6712 sc%=sc%+800
  6715 sound 5,8000,5*(21-be%),1,5000,500,0
  6720 be%=be%-1
- 6730 if be%=0 then stop
+ 6730 if be%=0 then gs%=7:rem win game!
  6740 return
  6800 rem *** turret was hit ***
  6805 bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3
@@ -350,8 +350,17 @@
  20070 if pk < 40 then goto 20040
  20080 gs%=2
  20090 return
- 50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
- 50005 on gs% gosub 50100,10,1000,10000,15000,20000
+ 30000 rem *** win game ***
+ 30002 border 0
+ 30005 print "{clr}":zt=ti
+ 30010 x%=2:y%=12:s$="congratulations! you defeated battle sparrow and brought peace to the galaxy!":gosub 1500
+ 30020 if mod(pk,10)=0 then bs%=mod(bs%+3,6):sound3+bs%,6000+int(rnd(1)*3000),30,1,2000,100,0
+ 30030 pk=pk+1
+ 30040 if ti-zt < 10 then goto 30010
+ 30045 gs%=2
+ 30050 return
+ 50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over,7=win game
+ 50005 on gs% gosub 50100,10,1000,10000,15000,20000,30000
  50010 goto 50005
  50100 rem *** init game data ***
  50101 dim wv%(6):rem wave-type, 0=baddie1,1=baddie2,2=rocks,3=sparrow
