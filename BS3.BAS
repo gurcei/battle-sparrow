@@ -86,7 +86,7 @@
   930 return
  1000 rem *** start level ***
  1010 ch=$2000:cl=$4000
- 1011 px%=39:py%=21:rem player pos
+ 1011 px%=39:py%=21:pe%=10:sc%=0:rem player pos, energy, score
  1012 fork=0to5:fx%(k)=0:fy%(k)=0:fv%(k)=0:nextk
  1013 fork=0to10:bx%(k)=0:by%(k)=0:bv%(k)=0:br%(k)=0:ba%(k)=0:bb%(k)=0:bc%(k)=0:nextk:rem reset baddies
  1015 gosub 1900:rem clear map
@@ -123,8 +123,15 @@
  1920 dma 3, $2000, 0, 0, $4000, 4
  1930 return
  2000 rem *** draw lives/score/hiscore ***
- 2010 print "{home}energy: {rvon}           {rvof}  score: 12340    hiscore: 00000 "
- 2020 return
+ 2010 print "{home}energy: {rvon}";
+ 2015 if sc%>hi% then hi%=sc%
+ 2020 for k%=1 to 10
+ 2030 if k%>pe% then print "{rvof}";
+ 2040 print " ";
+ 2050 next k%
+ 2060 print using "{rvof}  score: %5d";sc%;
+ 2070 print using "  hiscore: %5d ";hi%
+ 2080 return
  3000 rem *** draw background tiles ***
  3020 ex%=0:if of%<0 then ex%=-of%*80:if of%<-23 then return
  3025 xx%=0:if of%>15*5+1 then xx%=(of%-(15*5+1))*80
@@ -204,7 +211,7 @@
  6005 ch=$1000:cl=$1800
  6006 dw%=px%+3:dh%=py%+2:bank4
  6007 for y%=py% to dh%:for x%=px% to dw%
- 6008 c=peek($1800+y%*80+x%):if c=6 then bs%=mod(bs%+3,6):sound3+bs%,4000,20,2,2000,500,3:x%=dw%:y%=dh%
+ 6008 c=peek($1800+y%*80+x%):if c=6 then bs%=mod(bs%+3,6):gosub 6500:x%=dw%:y%=dh%
  6009 next x%:next y%
  6010 o%=18:x%=px%:y%=py%:gosub 5500
  6015 bank 4
@@ -216,6 +223,12 @@
  6070 bend
  6080 next k
  6090 return
+ 6500 rem *** player was hit ***
+ 6510 bs%=mod(bs%+3,6)
+ 6520 sound3+bs%,4000,20,2,2000,500,3
+ 6530 pe%=pe%-1:if pe%=0 then gs%=6:rem game over
+ 6540 ta%=1:rem timer for player hit flashing
+ 6550 return
  7000 rem *** draw birdie ***
  7010 if of%>0 then tm=0:return
  7020 tm=tm+1
@@ -265,8 +278,7 @@
  9200     x%=ba%(bi):y%=bb%(bi)
  9210     if x%>=px% and x%<=px%+3 and y%>=py% and y%<=py%+2 then begin
  9220       bc%(bi)=0
- 9230       rem todo - decrease player energy
- 9240       bs%=mod(bs%+3,6):sound3+bs%,4000,20,2,2000,500,3
+ 9230       gosub 6500:rem player hit
  9250     bend
  9260   bend
  9270 next bi
@@ -275,8 +287,7 @@
  9310   if bv%(bi)=1 then begin
  9320     x%=bx%(bi):y%=by%(bi)
  9330     if x%>=px%-3 and x%<=px%+3 and y%>=py%-2 and y%<=py%+2 then begin
- 9340       rem todo - decrease player energy
- 9350       bs%=mod(bs%+3,6):sound3+bs%,4000,20,2,2000,500,3
+ 9340       gosub 6500:rem player hit
  9360     bend
  9370   bend
  9380 next bi
@@ -299,6 +310,16 @@
  10140 t1=ti
  10150 if (ti-t1) < 0.02 then goto 10150
  10160 return
+ 20000 rem *** game over ***
+ 20010 x%=37:y%=12:s$="game over":pk=0
+ 20020 sound 1,6000,50,1,2000,50,0
+ 20030 sound 4,6100,50,1,2100,50,0
+ 20040 gosub 1500
+ 20050 sleep 0.05
+ 20060 pk=pk+1
+ 20070 if pk < 40 then goto 20040
+ 20080 gs%=2
+ 20090 return
  50000 gs%=1:rem 1=init,2=title,3=startlevel,4=maingame,5=endlevel,6=game over
  50005 on gs% gosub 50100,10,1000,10000,15000,20000
  50010 goto 50005
