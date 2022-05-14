@@ -18,6 +18,7 @@
    60 gosub 1700:rem copy scrbuf to screen
    80 get a$:if a$<>"" then goto 110
    85 if joy(2) and 128 then goto 110
+   87 gosub 61000
    90 if bx%=90 then bx%=-35:sx%=80
    95 t=t+0.05:zt=zt+0.01
   100 goto 30
@@ -61,6 +62,7 @@
   710 for zy% = 0 to 19
   715 if zy%<0 or zy%> 19 then goto 920
   720 for zx% = 1 to 15
+  725 gosub 61000
   730 o%=0:c$=mid$(lv$(zy%),zx%,1)
   740 if c$="L" then o%=1
   750 if c$="{SHIFT-@}" then o%=2
@@ -86,7 +88,7 @@
   930 return
  1000 rem *** start level ***
  1010 ch=$2000:cl=$4000:ta%=0:tb%=0:tc%=0
- 1011 px%=39:py%=21:pe%=10:sc%=0:rem player pos, energy, score
+ 1011 px%=39:py%=21:pe%=10:sc=0:rem player pos, energy, score
  1012 fork=0to5:fx%(k)=0:fy%(k)=0:fv%(k)=0:nextk
  1013 fork=0to10:bx%(k)=0:by%(k)=0:bv%(k)=0:br%(k)=0:ba%(k)=0:bb%(k)=0:bc%(k)=0:nextk:rem reset baddies
  1015 gosub 1900:rem clear map
@@ -124,13 +126,13 @@
  1930 return
  2000 rem *** draw lives/score/hiscore ***
  2010 print "{home}energy: {rvon}";
- 2015 if sc%>hi% then hi%=sc%
+ 2015 if sc>hi then hi=sc
  2020 for k%=1 to 10
  2030 if k%>pe% then print "{rvof}";
  2040 print " ";
  2050 next k%
- 2060 print using "{rvof}  score: %5d";sc%;
- 2070 print using "  hiscore: %5d ";hi%
+ 2060 print using "{rvof}  score: %5d";sc;
+ 2070 print using "  hiscore: %5d ";hi
  2080 return
  3000 rem *** draw background tiles ***
  3020 ex%=0:if of%<0 then ex%=-of%*80:if of%<-23 then return
@@ -238,14 +240,14 @@
  6550 return
  6700 rem *** birdie was hit ***
  6710 ta%=1:rem timer for birdie hit flashing
- 6712 sc%=sc%+800
+ 6712 sc=sc+800
  6715 sound 5,8000,5*(21-be%),1,5000,500,0
  6720 be%=be%-1
  6730 if be%=0 then gs%=7:rem win game!
  6740 return
  6800 rem *** turret was hit ***
  6805 bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3
- 6807 sc%=sc%+500
+ 6807 sc=sc+500
  6810 rem figure out which turret from current fire
  6820 x%=fx%(k):y%=fy%(k)
  6830 tx%=x%/5:ty%=(of%+y%)/5
@@ -288,8 +290,8 @@
  9060         x2%=bx%(bi):y2%=by%(bi)
  9070         if x%>=x2% and x%<=x2%+3 and y%>=y2% and y%<=y2%+2 then begin
  9075           fv%(pi)=0:ty%=bt%(bi)
- 9080           if ty%=17 then bs%=mod(bs%+3,6):sound3+bs%,5000,10,1,3000,500,3:sc%=sc%+200
- 9090           if ty%=15 or ty%=16 then bv%(bi)=0:bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3:sc%=sc%+200
+ 9080           if ty%=17 then bs%=mod(bs%+3,6):sound3+bs%,5000,10,1,3000,500,3:sc=sc+200
+ 9090           if ty%=15 or ty%=16 then bv%(bi)=0:bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3:sc=sc+200
  9100           bi=5
  9110         bend
  9120       bend
@@ -332,7 +334,8 @@
  10127 ff%=ff%+1:if ff%>12 then ff%=0:of%=of%-1
  10130 rem *** throttle game speed & poll music segment ***
  10140 t1=ti
- 10150 if (ti-t1) < 0.02 then goto 10150
+ 10145 gosub 61000
+ 10150 if (ti-t1) < 0.02 then gosub 61000:goto 10150
  10160 if ta%>0 then begin
  10170   bank 128:poke 53280,ta%+15
  10180   ta%=ta%+1
@@ -346,6 +349,7 @@
  20030 sound 4,6100,50,1,2100,50,0
  20040 gosub 1500
  20050 sleep 0.05
+ 20055 gosub 61000
  20060 pk=pk+1
  20070 if pk < 40 then goto 20040
  20080 gs%=2
@@ -356,6 +360,7 @@
  30010 x%=2:y%=12:s$="congratulations! you defeated battle sparrow and brought peace to the galaxy!":gosub 1500
  30020 if mod(pk,10)=0 then bs%=mod(bs%+3,6):sound3+bs%,6000+int(rnd(1)*3000),30,1,2000,100,0
  30030 pk=pk+1
+ 30035 gosub 61000
  30040 if ti-zt < 10 then goto 30010
  30045 gs%=2
  30050 return
@@ -367,7 +372,7 @@
  50102 wv%(0)=15:wv%(1)=17:wv%(2)=16:wv%(3)=17:wv%(4)=15:wv%(5)=17:wv%(6)=16
  50103 dim wt%(6):rem wave-time trigger
  50104 wt%(0)=90:wt%(1)=80:wt%(2)=70:wt%(3)=60:wt%(4)=50:wt%(5)=40:wt%(6)=20
- 50105 bank 4:p = 0:dim lv$(20)
+ 50105 bank 4:p = 0:dim lv$(20):gosub 60000
  50106 dim rx%(10):dim ry%(10):dim rv%(10):fork=0to10:rx%(k)=int(rnd(1)*25)*3+1:ry%(k)=rnd(1)*22+2:rv%(k)=rnd(1)*3+1:next k:rem stars
  50107 dim fx%(5),fy%(5),fv%(5):rem player fire x,y,visible
  50108 background 0:border 0
@@ -590,3 +595,56 @@
  53180 data "    J{CBM-P}{CBM-P}{SHIFT-@} {CBM-G}x.x{CBM-M} "
  53190 data "         {CBM-G}.x.{CBM-M} "
  53200 data "         L{CBM-P}{CBM-P}{CBM-P}{SHIFT-@} "
+ 59999 rem *** init music strings ***
+ 60000 tt=0:envelope 8,1:vv=10
+ 60010 dim m$(5),m2$(5),b$(5)
+ 60020 dim mm(27):mm(0)=0:mm(1)=1:mm(2)=1:mm(3)=2:mm(4)=2:mm(5)=1:mm(6)=1:mm(7)=2:mm(8)=2:mm(9)=3:mm(10)=3:mm(11)=1:mm(12)=1:mm(13)=2:mm(14)=2:mm(15)=3:mm(16)=3
+ 60030 mm(17)=4:mm(18)=5:mm(19)=4:mm(20)=5:mm(21)=4:mm(22)=5:mm(23)=4:mm(24)=5:mm(25)=4:mm(26)=5
+ 60040 dim sp(27):rem val0=melody with 4 channel echo, val1=two melody with 2 channel echo
+ 60050 sp(9)=1:sp(10)=1:sp(15)=1:sp(16)=1:sp(17)=1:sp(18)=1:sp(19)=1:sp(20)=1:sp(21)=1:sp(22)=1:sp(23)=1:sp(24)=1:sp(25)=1:sp(26)=1
+ 60060 tempo 20
+ 60070 rem *** melody ***
+ 60080 m$(0)="t2 o4 m5 p0 q.gp5.a.#a.g#a o5d .#c o4.#a m7 h.a m5 iag#f#d
+ 60090 m$(0)=m$(0)+"o4 q.d .#f .a o5 .#d d c o4 p9 i#a g #a o5 d o4 #a o5 d w.g o6 w.g o3 .g"
+ 60100 m$(1)="t6m0 o4igdg#ag#ao5do4#ao5dq.g g#a q.a .e .#c o3 .a e #c"
+ 60110 m$(1)=m$(1)+"o4 ic o3go4c#dc#dg#dgo5q.c c #d .d .#f .a p0o6i#dd#dcd o5#aa"
+ 60120 m$(2)="t5o4ieo3bo4e#gb#a#go3bo4#g#feo3bo4eo3b#ge
+ 60130 m$(2)=m$(2)+"o4#g#d#gbo5#d#co4b#do5#co4b#a#db#a#g#a"
+ 60140 m$(2)=m$(2)+"io4#adf#ao5dco4#ado5f#ddo4do5#g#ff#f"
+ 60150 m$(2)=m$(2)+"io4g#dg#ao5#co4#ao5#ce#ae#de#c#do4b#a"
+ 60160 m$(3)="t2o4w#g hg{$a0}ie#deg w.#d"
+ 60170 m$(3)=m$(3)+"o4ib#abo5#co4w.#a"
+ 60180 m$(3)=m$(3)+"o5i#gg#g#a wg ire#de#c#do4b#a"
+ 60190 m$(4)="t2o5i#d#c#des#de#c#dio4b o5#co4bo5#c#ds#c#do4bo5#co4i#a b#abo5#co4sbo5#co4#abi#g sbo5#co4#ab i#gg#g#ab"
+ 60200 m$(4)=m$(4)+"t2o5i#d#c#des#de#c#dio4b o5#co4bo5#c#ds#c#do4bo5#co4i#a b#abo5#co4sbo5#co4#abi#g sbo5#co4#ab i#gg#g#ab"
+ 60210 m$(5)="t2o4 q#g#g gie qgge i#d qbb i#a#gg h#g i#deg "
+ 60220 m$(5)=m$(5)+"t2o4 q#g#g gie qgge i#d qbb i#a#gg h#g i#deg "
+ 60230 rem *** melody 2 ***
+ 60240 m2$(3)="t2o5qri#g#ab#a#g#a rgeg re#ce r#do4b#ab#a#grwr iro5e#de#co4b#arwr ir o5ge#co4#ag#dr wr"
+ 60250 m2$(4)="t3 so0cr cc cr cc o1 grgggr l"
+ 60260 m2$(5)="t3 so0cr cc cr cc o1 grgggr l"
+ 60270 rem *** bass line ***
+ 60280 b$(0)="t8 o1 m0 p1 w.g q #a o2 d w.#c q #c d o1 w.d q a #a h.g w.g .g qgggggg"
+ 60290 b$(1)="o1 t0 p0iggo2go1go2go1qggigo2go1go2go1go2g#a"
+ 60300 b$(1)=b$(1)+"o1aao2ao1ao2ao1qaaiao2ao1ao2ao1ao2ao1a
+ 60310 b$(1)=b$(1)+"o1cco2co1co2co1qccico2co1co2co1co2c#d"
+ 60320 b$(1)=b$(1)+"o1ddo2do1do2do1qdo2di#dcdo1#ao2co1a#a"
+ 60330 b$(2)="o1ieeo2eo1eo2eo1qeeo2ieo1eeo2eo1eo2g#g"
+ 60340 b$(2)=b$(2)+"o1i#g#go2#go1#go2#go1q#g#go2i#go1#g#go3#d#co2b#a"
+ 60350 b$(2)=b$(2)+"o1#a#ao2#ao1#ao2#ao1q#a#ao2i#ao1#a#ao2#ao1#ao3#cd"
+ 60360 b$(2)=b$(2)+"o2#d#do3#do2#do3#do2q#d#do3ie#c#do2bo3#co2#ab"
+ 60370 b$(3)="p3t0o2ieo1bo2e#gb#a#go1bo2#g#feo1bo2eo1b#ge
+ 60380 b$(3)=b$(3)+"o2#g#d#gbo3#d#co2b#do3#co2b#a#db#a#g#a"
+ 60390 b$(3)=b$(3)+"io2#adf#ao3dco2#ado3f#ddo2do3p6#gp3#ff#f"
+ 60400 b$(3)=b$(3)+"io2g#dg#ao3#co2#ao3#ce#ae#de#c#do2b#a"
+ 60410 b$(4)="o1q#g#go2i#go1q#gl"
+ 60420 b$(5)="o1q#g#go2i#go1q#gl"
+ 60422 return
+ 60999 rem *** poll for play of next music segment ***
+ 61000 if rplay(1) then return
+ 61005 ty=mm(tt):if tt=0 then vv=10
+ 61010 if tt>17 then vv=vv-1
+ 61020 vol vv,vv
+ 61030 if sp(tt) = 1 then play m$(ty),b$(ty),m2$(ty):sleep 0.05:play ,,,m$(ty),b$(ty),m2$(ty): goto 61060
+ 61040 play m$(ty),b$(ty):sleep 0.05:play ,,,m$(ty),b$(ty):sleep0.10:play ,,m$(ty):sleep0.15:play,,,,,m$(ty)
+ 61060 tt = mod(tt+1,27):return
