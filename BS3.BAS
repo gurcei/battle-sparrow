@@ -218,6 +218,7 @@
  6020 fork=0to5
  6030 iffv%(k)then begin
  6040 poke $1000+fy%(k)*80+fx%(k),30
+ 6045 if peek($1800+fy%(k)*80+fx%(k))=6 then fv%(k)=0:gosub 6700:rem hit birdie
  6050 poke $1800+fy%(k)*80+fx%(k),2
  6060 fy%(k)=fy%(k)-2:if fy%(k)<=0 then fv%(k)=0
  6070 bend
@@ -229,8 +230,14 @@
  6530 pe%=pe%-1:if pe%=0 then gs%=6:rem game over
  6540 ta%=1:rem timer for player hit flashing
  6550 return
+ 6700 rem *** birdie was hit ***
+ 6710 tc%=1:rem timer for birdie hit flashing
+ 6715 sound 5,8000,5*(11-be%),1,5000,500,0
+ 6720 be%=be%-1
+ 6730 if be%=0 then stop
+ 6740 return
  7000 rem *** draw birdie ***
- 7010 if of%>0 then tm=0:return
+ 7010 if of%>0 then tm=0:be%=10:return
  7020 tm=tm+1
  7025 y%=5+sin(tm/10)*10
  7030 x%=mod(tm,146)-33:o%=22:gosub 5500
