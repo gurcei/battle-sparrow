@@ -156,8 +156,9 @@
  5033 if bt%(k)=17 then by%(k)=by%(k)+1:ifby%(k)>24thenbv%(k)=0
  5034 if bt%(k)=16 then bx%(k)=bx%(k)+1:ifbx%(k)>79thenbv%(k)=0
  5035 if bt%(k)=15 then bx%(k)=bx%(k)-1:ifbx%(k)<-3thenbv%(k)=0
- 5036 rem if k=0 then print "bc=";bc%(k);"df=";df%;ba%(k);bb%(k)
+ 5036 if (bt%(k)=15 or bt%(k)=16) and df%<>0 and rnd(1)>0.7 then begin:if py%>by%(k)thenby%(k)=by%(k)+1:else if py%<by%(k)thenby%(k)=by%(k)-1:bend
  5037 if bc%(k)=0 and bt%(k)<>17 and df%=1 and int(rnd(1)*8)=4 then bc%(k)=1:ba%(k)=bx%(k)+2:bb%(k)=by%(k)+3:bs%=mod(bs%+3,6):sound2+bs%,10000,10,1,8000,200,0
+ 5038 if bt%(k)=17 and df%<>0 and rnd(1)>0.5 then begin:if px%>bx%(k) then bx%(k)=bx%(k)+1:else if px%<bx%(k)then bx%(k)=bx%(k)-1:bend
  5040 bend
  5045 bank 4
  5050 ifbc%(k)=1thenbegin
