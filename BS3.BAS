@@ -168,10 +168,11 @@
  5080 bend
  5090 nextk
  5100 rem *** check if we've triggered the next wave? ***
- 5102 if of% = lo% then return:rem return if same as last offset
- 5104 lo%=of%
+ 5101 fz%=of%:do while fz%<0:fz%=fz%+100:loop
+ 5102 if fz% = lo% then return:rem return if same as last offset
+ 5104 lo%=fz%
  5110 fork=0to6:rem check each wave
- 5120   if wt%(k)=of% then begin
+ 5120   if wt%(k)=fz% then begin
  5140     forl=0to5:rem initialise baddies in wave
  5150       bt%(l)=wv%(k)
  5160       bp%(l)=0
@@ -238,7 +239,7 @@
  6700 rem *** birdie was hit ***
  6710 ta%=1:rem timer for birdie hit flashing
  6712 sc%=sc%+800
- 6715 sound 5,8000,5*(11-be%),1,5000,500,0
+ 6715 sound 5,8000,5*(21-be%),1,5000,500,0
  6720 be%=be%-1
  6730 if be%=0 then stop
  6740 return
@@ -253,7 +254,7 @@
  6860 o%=14:gosub 500
  6900 return
  7000 rem *** draw birdie ***
- 7010 if of%>0 then tm=0:be%=10:return
+ 7010 if of%>0 then tm=0:be%=20:return
  7020 tm=tm+1
  7025 y%=5+sin(tm/10)*10
  7030 x%=mod(tm,146)-33:o%=22:gosub 5500
