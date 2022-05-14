@@ -100,7 +100,7 @@
  1050 get k$:if k$="" then pk=pk+1:goto 1048
  1060 foreground 1
  1070 gs%=gs%+1
- 1075 of%=20*5:of%=5
+ 1075 of%=20*5
  1080 return
  1500 rem *** sub: print rainbow string(x%,y%,pk,s$) ***
  1510 cursor x%,y%
@@ -217,9 +217,11 @@
  6015 bank 4
  6020 fork=0to5
  6030 iffv%(k)then begin
- 6040 poke $1000+fy%(k)*80+fx%(k),30
- 6045 if peek($1800+fy%(k)*80+fx%(k))=6 then fv%(k)=0:gosub 6700:rem hit birdie
- 6050 poke $1800+fy%(k)*80+fx%(k),2
+ 6035 ic%=fy%(k)*80+fx%(k)
+ 6040 poke $1000+ic%,30
+ 6045 if peek($1800+ic%)=6 then fv%(k)=0:gosub 6700:rem hit birdie
+ 6046 if peek($1800+ic%)=3 then fv%(k)=0:gosub 6800:rem hit turret
+ 6050 poke $1800+ic%,2
  6060 fy%(k)=fy%(k)-2:if fy%(k)<=0 then fv%(k)=0
  6070 bend
  6080 next k
@@ -236,6 +238,16 @@
  6720 be%=be%-1
  6730 if be%=0 then stop
  6740 return
+ 6800 rem *** turret was hit ***
+ 6805 bs%=mod(bs%+3,6):sound3+bs%,1000,20,1,500,20,3
+ 6807 sc%=sc%+500
+ 6810 rem figure out which turret from current fire
+ 6820 x%=fx%(k):y%=fy%(k)
+ 6830 tx%=x%/5:ty%=(of%+y%)/5
+ 6840 ch=$2000:cl=$4000
+ 6850 x%=tx%*5:y%=ty%*5
+ 6860 o%=14:gosub 500
+ 6900 return
  7000 rem *** draw birdie ***
  7010 if of%>0 then tm=0:be%=10:return
  7020 tm=tm+1
@@ -445,7 +457,7 @@
  51520 rem *** obj14 = turret shot ***
  51530 data 5,5
  51540 data 160,236,120,251,160,160,108,102,123,160,97,102,32,102,225,160,124,102,126,160,160,252,98,254,160
- 51550 data 5,5,5,5,5,5,12,12,12,5,5,12,5,12,5,5,12,12,12,5,5,5,5,5,5
+ 51550 data 5,5,5,5,5,5,12,12,12,5,5,12,0,12,5,5,12,12,12,5,5,5,5,5,5
  51560 rem *** obj15 = baddie1 ***
  51570 data 4,3
  51580 data 233,160,160,223,95,209,209,105,85,91,91,73
