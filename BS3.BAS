@@ -100,7 +100,7 @@
  1050 get k$:if k$="" then pk=pk+1:goto 1048
  1060 foreground 1
  1070 gs%=gs%+1
- 1075 of%=20*5
+ 1075 of%=20*5:of%=5
  1080 return
  1500 rem *** sub: print rainbow string(x%,y%,pk,s$) ***
  1510 cursor x%,y%
@@ -212,6 +212,11 @@
  6070 bend
  6080 next k
  6090 return
+ 7000 rem *** draw birdie ***
+ 7010 if of%>0 then tm=0:return
+ 7020 tm=tm+1
+ 7030 x%=mod(tm,146)-33:y%=1:o%=22:gosub 5500
+ 7040 return
  8000 rem *** check input ***
  8010 get k$
  8015 v=joy(2):b=v and 128:v = v and 127
@@ -277,7 +282,8 @@
  10020 gosub 4000:rem draw stars
  10030 gosub 3000:rem draw background tiles
  10040 gosub 5000:rem draw baddies
- 10050 gosub 6000:rem draw players
+ 10050 gosub 7000:rem draw birdie
+ 10060 gosub 6000:rem draw players
  10070 gosub 8000:rem check input
  10080 gosub 9000:rem check collisions
  10110 rem *** page flip ***
